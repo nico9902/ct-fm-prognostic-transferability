@@ -1,0 +1,6 @@
+lightning>=2.4
+wandb>=0.18
+
+# Install this after PyTorch has already been installed by
+# scripts/install_radjepa_cuda_deps.sh. Otherwise pip may choose a PyTorch wheel
+# with a CUDA runtime that does not match the server driver.

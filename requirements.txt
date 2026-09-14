@@ -1,0 +1,21 @@
+pandas>=2.0
+openpyxl>=3.1
+requests>=2.31
+idc-index==0.12.5
+nibabel>=5.4
+pydicom>=3.0
+pillow>=10.0
+pylibjpeg>=2.0
+pylibjpeg-libjpeg>=2.1
+python-gdcm>=3.0.10; platform_system == "Linux"
+einops>=0.8
+huggingface_hub>=0.23.2,<1.0
+scipy>=1.14
+scikit-learn>=1.4
+
+# PyTorch is intentionally not listed here. Install the CUDA runtime for
+# Rad-JEPA-3D with:
+#   PYTHON=.venv/bin/python bash scripts/install_radjepa_cuda_deps.sh
+#
+# Keep huggingface_hub below 1.0 because the current server stack includes
+# transformers/tokenizers versions that require huggingface-hub<1.0.

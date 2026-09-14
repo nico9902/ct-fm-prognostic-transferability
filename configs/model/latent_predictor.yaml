@@ -1,0 +1,31 @@
+transitions: data/processed/nlst/radjepa_transitions.csv
+output_dir: outputs/checkpoints/latent_predictor
+epochs: 100
+batch_size: 32
+num_workers: 4
+hidden_dim: 512
+dropout: 0.1
+model_arch: mlp
+prediction_mode: direct
+transformer_dim: 384
+transformer_layers: 2
+transformer_heads: 8
+transformer_mlp_dim: 1536
+max_tokens: 1024
+lr: 0.001
+weight_decay: 0.0001
+cosine_weight: 0.1
+val_fraction: 0.2
+test_fraction: 0.2
+use_clinical: true
+use_delta: true
+seed: 42
+accelerator: auto
+devices: auto
+precision: 32-true
+test: true
+wandb: true
+wandb_project: lung-jepa-world-model
+wandb_entity:
+wandb_name:
+wandb_offline: false

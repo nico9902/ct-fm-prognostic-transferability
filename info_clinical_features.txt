@@ -1,0 +1,39 @@
+clinical_source_batch: Data-source or acquisition-batch identifier used in the processed dataset; likely pipeline-specific metadata rather than an original NLST clinical variable.
+clinical_race: Participant race.
+clinical_cigsmok: Cigarette smoking status at baseline/randomization; former or current smoker.
+clinical_gender: Participant sex/gender.
+clinical_age: Participant age at randomization, in years.
+clinical_loclhil: Indicator that the primary lung cancer was located in the left hilum.
+clinical_locllow: Indicator that the primary lung cancer was located in the left lower lobe.
+clinical_loclup: Indicator that the primary lung cancer was located in the left upper lobe.
+clinical_locrhil: Indicator that the primary lung cancer was located in the right hilum.
+clinical_locrlow: Indicator that the primary lung cancer was located in the right lower lobe.
+clinical_locrmid: Indicator that the primary lung cancer was located in the right middle lobe.
+clinical_locunk: Indicator that the anatomical location of the primary lung cancer was unknown.
+clinical_locrup: Indicator that the primary lung cancer was located in the right upper lobe.
+clinical_locoth: Indicator that the primary lung cancer was located in another specified pulmonary or thoracic location.
+clinical_locmed: Indicator that the primary lung cancer involved the mediastinum.
+clinical_loclmsb: Indicator that the primary lung cancer involved the left main-stem bronchus.
+clinical_locrmsb: Indicator that the primary lung cancer involved the right main-stem bronchus.
+clinical_loccar: Indicator that the primary lung cancer involved the carina.
+clinical_loclin: Indicator that the primary lung cancer involved the lingula of the left lung.
+clinical_lesionsize: Size of the primary lung lesion or tumor, typically measured in millimeters.
+clinical_de_type: Histologic or morphologic type of the lung cancer, generally based on ICD-O morphology coding.
+clinical_de_grade: Histologic differentiation grade of the lung cancer.
+clinical_de_stag: Stage of the first primary lung cancer according to the AJCC 6th edition.
+clinical_scr_res0: Official result of the baseline T0 screening examination.
+clinical_scr_res1: Official result of the T1 screening examination.
+clinical_scr_res2: Official result of the T2 screening examination.
+clinical_scr_iso0: Result of the T0 isolation read, before comparison with prior imaging.
+clinical_scr_iso1: Result of the T1 isolation read, before comparison with prior imaging.
+clinical_scr_iso2: Result of the T2 isolation read, before comparison with prior imaging.
+clinical_cancyr: Study year associated with the first confirmed lung-cancer diagnosis.
+clinical_can_scr: Relationship between the first confirmed lung cancer and the screening process, such as screen-detected, negative-screen-associated, missed-screen, or post-screening cancer.
+clinical_canc_rpt_link: Indicator of whether the lung-cancer diagnosis was linked to a positive screening result.
+clinical_pid: Unique participant identifier; should generally be treated as an identifier rather than a predictive clinical feature.
+clinical_scr_days0: Number of days from randomization to the T0 screening examination.
+clinical_scr_days1: Number of days from randomization to the T1 screening examination.
+clinical_scr_days2: Number of days from randomization to the T2 screening examination.
+clinical_candx_days: Number of days from randomization to the first confirmed lung-cancer diagnosis.
+clinical_canc_free_days: Number of days from randomization until the participant was last known to be free of lung cancer.
+clinical_de_stag_7thed: Stage of the first primary lung cancer according to the AJCC 7th edition.

@@ -1,0 +1,6 @@
+dicom_patient_id,source_batch,pid,lc_topog,topog_source,de_type,de_grade,de_stag,path_stag,clinical_stag,stage_sum,valcsg,clinical_t_7thed,clinical_n_7thed,clinical_m_7thed,path_t_7thed,path_n_7thed,path_m_7thed,de_stag_7thed,first_lc,lesionsize,lc_morph,lc_behav,lc_grade,source_best_stage,clinical_t,path_t,clinical_n,path_n,clinical_m,path_m,stage_only,study_yr,dataset_version,lc_order,candx_days
+107434,0,107434,C34.1,2,8070,4,110,110,110,,,110,0,0,110,0,0,110,1,14,8070,3,3,1,100,100,0,0,0,0,,1,2011.02.03/05.12.21,1,394
+120573,0,120573,C34.1,2,8250,6,110,110,110,,,110,0,0,110,0,0,110,1,10,8250,3,9,1,100,100,0,0,0,0,,2,2011.02.03/05.12.21,1,897
+101837,0,101837,C34.1,2,8070,3,120,120,220,,,220,100,0,220,0,0,210,1,52,8140,3,3,1,200,200,100,0,0,0,,5,2011.02.03/05.12.21,1,1976
+118669,0,118669,C34.9,1,8070,1,320,,320,4,,999,0,110,,,,400,1,,8070,3,9,2,400,,0,,0,,910,5,2011.02.03/05.12.21,1,2109
+213567,0,213567,C34.2,1,8140,9,400,999,400,3,3,210,0,120,999,999,999,400,1,50,8140,3,9,2,200,999,0,999,100,999,400,5,2011.02.03/05.12.21,1,1902

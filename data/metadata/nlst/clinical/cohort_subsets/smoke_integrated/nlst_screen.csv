@@ -1,0 +1,4 @@
+dicom_patient_id,source_batch,pid,ctdxqual,study_yr,techpara_kvp,techpara_ma,techpara_fov,techpara_effmas,ct_recon_filter1,ct_recon_filter2,ctdxqual_breath,ctdxqual_motion,ctdxqual_resp,ctdxqual_techpara,ctdxqual_inadeqimg,ctdxqual_artifact,ctdxqual_graininess,ctdxqual_other,ct_recon_filter3,ct_recon_filter4,dataset_version
+210733,0,210733,1,0,120,,27,40,4,5,,,,,,,,,,,2011.02.03/05.12.21
+210733,0,210733,1,1,120,80,29,,10,11,,,,,,,,,,,2011.02.03/05.12.21
+210733,0,210733,1,2,120,,27,30,8,,,,,,,,,,,,2011.02.03/05.12.21
