@@ -26,6 +26,14 @@ if [[ ! -x "${PYTHON}" ]]; then
   exit 1
 fi
 
+echo "Running NLST pilot pipeline"
+echo "TAG=${TAG}"
+echo "N_PATIENTS=${N_PATIENTS}"
+echo "SEED=${SEED}"
+echo "MIN_TIMEPOINTS=${MIN_TIMEPOINTS}"
+echo "MIN_IMAGES=${MIN_IMAGES}"
+echo "PYTHON=${PYTHON}"
+
 if [[ "${RUN_BUILD_DOWNLOAD}" == "1" ]]; then
   "${PYTHON}" scripts/build_nlst_manifest.py \
     --max-patients "${N_PATIENTS}" \

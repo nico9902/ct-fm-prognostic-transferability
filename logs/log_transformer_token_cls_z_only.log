@@ -1,0 +1,4 @@
+nohup: ignoring input
+Started transformer_token_cls z_only training PID 3371930
+PID file: outputs/logs/train_latent_predictor_pilot_500_balanced_transformer_token_cls_z_only_gpu2.pid
+Log file: outputs/logs/train_latent_predictor_pilot_500_balanced_transformer_token_cls_z_only_gpu2.log

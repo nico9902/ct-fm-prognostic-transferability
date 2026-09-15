@@ -208,8 +208,11 @@ def score_series(row: pd.Series, min_images: int) -> float:
     if bad_description(combined):
         return -1e9
 
-    if count and count < min_images:
-        return -1e8 + count
+    # Rejected rows must stay below the cutoff used by
+    # ``choose_representative_series``.  Returning ``-1e8 + count`` allowed
+    # every positive count below ``min_images`` to pass ``score > -1e8``.
+    if count < min_images:
+        return -1e9
 
     score = count
 

@@ -45,12 +45,37 @@ def prepare_one(
     normalization: str,
     window: tuple[float, float],
     overwrite: bool,
-) -> tuple[str, str]:
+    canonicalize: bool,
+) -> tuple[str, str, dict[str, str]]:
+    image = nib.load(str(nifti_path))
+    if len(image.shape) != 3:
+        raise ValueError(f"Expected a 3D NIfTI, got shape={image.shape}")
+    source_orientation = "".join(nib.aff2axcodes(image.affine))
+    if canonicalize:
+        image = nib.as_closest_canonical(image)
+    prepared_orientation = "".join(nib.aff2axcodes(image.affine))
+    source_spacing = tuple(float(v) for v in image.header.get_zooms()[:3])
+    source_shape = tuple(int(v) for v in image.shape)
+    metadata = {
+        "radjepa_source_orientation": source_orientation,
+        "radjepa_prepared_orientation": prepared_orientation,
+        "radjepa_source_spacing_mm": "x".join(f"{v:.6g}" for v in source_spacing),
+        "radjepa_effective_spacing_mm": "x".join(
+            f"{source_shape[axis] * source_spacing[axis] / target:.6g}"
+            for axis, target in zip((2, 0, 1), TARGET_SHAPE)
+        ),
+        "radjepa_canonicalized": str(bool(canonicalize)).lower(),
+        "radjepa_preprocessing_version": "nlst_radjepa_v2",
+    }
+
     if output_path.exists() and not overwrite:
         arr = np.load(output_path, mmap_mode="r")
-        return "exists", "x".join(map(str, arr.shape))
+        # The .npy format does not retain orientation or preprocessing
+        # provenance, so an older file cannot be certified as v2 here.
+        metadata["radjepa_canonicalized"] = "unknown"
+        metadata["radjepa_preprocessing_version"] = "existing_unverified"
+        return "exists", "x".join(map(str, arr.shape)), metadata
 
-    image = nib.load(str(nifti_path))
     volume = np.asarray(image.dataobj, dtype=np.float32)
     volume = np.nan_to_num(volume, nan=-1000.0, posinf=window[1], neginf=window[0])
 
@@ -62,7 +87,7 @@ def prepare_one(
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     np.save(output_path, volume)
-    return "prepared", "x".join(map(str, volume.shape))
+    return "prepared", "x".join(map(str, volume.shape)), metadata
 
 
 def parse_args() -> argparse.Namespace:
@@ -93,6 +118,16 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--window-min", type=float, default=-1000.0)
     parser.add_argument("--window-max", type=float, default=400.0)
+    parser.add_argument(
+        "--no-canonicalize",
+        action="store_true",
+        help="Keep source array orientation instead of canonical RAS orientation.",
+    )
+    parser.add_argument(
+        "--require-qc-ready",
+        action="store_true",
+        help="Require every input row to have qc_status=ready.",
+    )
     parser.add_argument("--overwrite", action="store_true")
     return parser.parse_args()
 
@@ -100,6 +135,15 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
     manifest = pd.read_csv(args.nifti_manifest, dtype=str)
+    if args.require_qc_ready:
+        if "qc_status" not in manifest.columns:
+            raise SystemExit(
+                "--require-qc-ready requires a manifest produced by "
+                "validate_nlst_nifti_for_radjepa.py"
+            )
+        bad = manifest[manifest["qc_status"].fillna("") != "ready"]
+        if len(bad):
+            raise SystemExit(f"Input manifest contains {len(bad)} rows that are not qc_status=ready")
     args.output_root.mkdir(parents=True, exist_ok=True)
     args.output_manifest.parent.mkdir(parents=True, exist_ok=True)
 
@@ -122,12 +166,13 @@ def main() -> None:
         series_uid = str(row["series_uid"])
         out_dir = args.output_root / patient_id
         out_path = out_dir / f"{patient_id}_{timepoint}_{series_uid}.npy"
-        status, shape = prepare_one(
+        status, shape, preprocessing_metadata = prepare_one(
             nifti_path=Path(row["nifti_path"]),
             output_path=out_path,
             normalization=args.normalization,
             window=(args.window_min, args.window_max),
             overwrite=args.overwrite,
+            canonicalize=not args.no_canonicalize,
         )
 
         result = row.to_dict()
@@ -137,10 +182,11 @@ def main() -> None:
             "radjepa_normalization": args.normalization,
             "radjepa_status": status,
         })
+        result.update(preprocessing_metadata)
         results.append(result)
         print(f"[{index + 1:03d}/{len(manifest):03d}] {status}: {out_path}")
 
-    fieldnames = list(results[0].keys()) if results else []
+    fieldnames = list(dict.fromkeys(key for result in results for key in result))
     with args.output_manifest.open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()

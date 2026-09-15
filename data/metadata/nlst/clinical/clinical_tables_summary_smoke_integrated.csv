@@ -1,6 +1,0 @@
-table,raw_path,raw_rows,raw_columns,subset_path,subset_rows,subset_columns
-nlst_prsn,data/metadata/nlst/clinical/raw/nlst_prsn/000000000000.parquet,53452,41,data/metadata/nlst/clinical/cohort_subsets/smoke_integrated/nlst_prsn.csv,1,41
-nlst_canc,data/metadata/nlst/clinical/raw/nlst_canc/000000000000.parquet,2150,36,data/metadata/nlst/clinical/cohort_subsets/smoke_integrated/nlst_canc.csv,0,36
-nlst_screen,data/metadata/nlst/clinical/raw/nlst_screen/000000000000.parquet,75138,22,data/metadata/nlst/clinical/cohort_subsets/smoke_integrated/nlst_screen.csv,3,22
-nlst_ctab,data/metadata/nlst/clinical/raw/nlst_ctab/000000000000.parquet,177487,14,data/metadata/nlst/clinical/cohort_subsets/smoke_integrated/nlst_ctab.csv,0,14
-nlst_ctabc,data/metadata/nlst/clinical/raw/nlst_ctabc/000000000000.parquet,31046,12,data/metadata/nlst/clinical/cohort_subsets/smoke_integrated/nlst_ctabc.csv,0,12

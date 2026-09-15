@@ -5,6 +5,7 @@ PYTHON="${PYTHON:-.venv/bin/python}"
 DATASET_ROOT="${DATASET_ROOT:-/ssd2/domenico/datasets/nlst}"
 TAG="${TAG:-pilot_2000_balanced}"
 EXPECTED_PATIENTS="${EXPECTED_PATIENTS:-2000}"
+EXPECTED_PER_CLASS="${EXPECTED_PER_CLASS:-}"
 VAL_FRACTION="${VAL_FRACTION:-0.2}"
 TEST_FRACTION="${TEST_FRACTION:-0.2}"
 SEED="${SEED:-42}"
@@ -23,10 +24,16 @@ export PYTHONPATH="${PYTHONPATH:+${PYTHONPATH}:}src"
   --clinical-prsn "${CLINICAL_PRSN}" \
   --output "${OUTPUT}"
 
-"${PYTHON}" scripts/validate_nlst_cohort.py \
+VALIDATE_ARGS=(
   --subjects "${SUBJECTS}" \
   --transitions "${OUTPUT}" \
   --expected-patients "${EXPECTED_PATIENTS}" \
   --val-fraction "${VAL_FRACTION}" \
   --test-fraction "${TEST_FRACTION}" \
   --seed "${SEED}"
+)
+if [[ -n "${EXPECTED_PER_CLASS}" ]]; then
+  VALIDATE_ARGS+=(--expected-per-class "${EXPECTED_PER_CLASS}")
+fi
+
+"${PYTHON}" scripts/validate_nlst_cohort.py "${VALIDATE_ARGS[@]}"

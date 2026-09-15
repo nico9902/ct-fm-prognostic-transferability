@@ -16,6 +16,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--subjects", type=Path, required=True)
     parser.add_argument("--transitions", type=Path, required=True)
     parser.add_argument("--expected-patients", type=int, default=None)
+    parser.add_argument("--expected-per-class", type=int, default=None)
     parser.add_argument("--val-fraction", type=float, default=0.2)
     parser.add_argument("--test-fraction", type=float, default=0.2)
     parser.add_argument("--seed", type=int, default=42)
@@ -46,6 +47,12 @@ def main() -> None:
         raise SystemExit(f"Expected binary cancer_label 0/1, found counts={counts.to_dict()}.")
     if counts.loc[0] != counts.loc[1]:
         raise SystemExit(f"Cohort is not balanced: counts={counts.to_dict()}.")
+    if args.expected_per_class is not None:
+        if counts.loc[0] != args.expected_per_class or counts.loc[1] != args.expected_per_class:
+            raise SystemExit(
+                f"Expected {args.expected_per_class} patients per class, "
+                f"found counts={counts.to_dict()}."
+            )
 
     train, val, test = split_by_patient(
         transitions,

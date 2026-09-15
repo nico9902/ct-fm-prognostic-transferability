@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+from collections import Counter
 from pathlib import Path
 
 import nibabel as nib
@@ -21,6 +22,7 @@ from pydicom.errors import InvalidDicomError
 
 
 LPS_TO_RAS = np.diag([-1.0, -1.0, 1.0, 1.0])
+LOCALIZER_TERMS = ("LOCALIZER", "SCOUT", "TOPOGRAM", "SURVIEW", "SCANOGRAM")
 
 
 def find_series_dir(dicom_root: Path, patient_id: str, study_uid: str, series_uid: str) -> Path:
@@ -53,6 +55,57 @@ def read_dicom_slices(series_dir: Path) -> list[pydicom.dataset.FileDataset]:
     return slices
 
 
+def is_localizer(ds: pydicom.dataset.FileDataset) -> bool:
+    image_type = getattr(ds, "ImageType", [])
+    if isinstance(image_type, str):
+        image_type = [image_type]
+    text = " ".join(
+        [*(str(value) for value in image_type), str(getattr(ds, "SeriesDescription", ""))]
+    ).upper()
+    return any(term in text for term in LOCALIZER_TERMS)
+
+
+def filter_localizers(
+    slices: list[pydicom.dataset.FileDataset],
+) -> tuple[list[pydicom.dataset.FileDataset], str]:
+    diagnostic = [ds for ds in slices if not is_localizer(ds)]
+    dropped = len(slices) - len(diagnostic)
+    if not diagnostic:
+        raise RuntimeError("Series contains no diagnostic CT slices after removing localizers")
+    warning = f"removed_localizers={dropped}" if dropped else ""
+    return diagnostic, warning
+
+
+def filter_slices_by_dominant_shape(
+    slices: list[pydicom.dataset.FileDataset],
+) -> tuple[list[pydicom.dataset.FileDataset], str]:
+    shapes = [
+        (int(getattr(ds, "Rows", 0)), int(getattr(ds, "Columns", 0)))
+        for ds in slices
+    ]
+    counts = Counter(shapes)
+    if len(counts) <= 1:
+        return slices, ""
+
+    dominant_shape, dominant_count = counts.most_common(1)[0]
+    filtered = [
+        ds
+        for ds, shape in zip(slices, shapes)
+        if shape == dominant_shape
+    ]
+    dropped = len(slices) - len(filtered)
+    if not filtered:
+        raise RuntimeError(f"No slices remain after filtering shapes: {dict(counts)}")
+
+    warning = (
+        "mixed_slice_shapes: "
+        f"kept_shape={dominant_shape[0]}x{dominant_shape[1]} "
+        f"kept={dominant_count} dropped={dropped} "
+        f"all_shapes={dict(counts)}"
+    )
+    return filtered, warning
+
+
 def slice_position(ds: pydicom.dataset.FileDataset, normal: np.ndarray) -> float:
     if hasattr(ds, "ImagePositionPatient"):
         return float(np.dot(np.asarray(ds.ImagePositionPatient, dtype=float), normal))
@@ -72,6 +125,73 @@ def sort_slices(
     positions = np.asarray([slice_position(ds, normal) for ds in slices], dtype=float)
 
     return slices, row_cos, col_cos, positions
+
+
+def deduplicate_identical_positions(
+    slices: list[pydicom.dataset.FileDataset],
+    positions: np.ndarray,
+    tolerance_mm: float = 1e-3,
+) -> tuple[list[pydicom.dataset.FileDataset], str]:
+    """Remove repeated planes only when their decoded HU inputs are identical."""
+    kept: list[pydicom.dataset.FileDataset] = []
+    dropped = 0
+    start = 0
+    while start < len(slices):
+        end = start + 1
+        while end < len(slices) and abs(positions[end] - positions[start]) <= tolerance_mm:
+            end += 1
+        group = slices[start:end]
+        reference = group[0]
+        reference_pixels = reference.pixel_array
+        reference_scale = (
+            float(getattr(reference, "RescaleSlope", 1.0)),
+            float(getattr(reference, "RescaleIntercept", 0.0)),
+        )
+        for duplicate in group[1:]:
+            duplicate_scale = (
+                float(getattr(duplicate, "RescaleSlope", 1.0)),
+                float(getattr(duplicate, "RescaleIntercept", 0.0)),
+            )
+            if duplicate_scale != reference_scale or not np.array_equal(
+                duplicate.pixel_array, reference_pixels
+            ):
+                raise RuntimeError(
+                    "Conflicting images share a physical slice position; "
+                    "select another series instead of deduplicating"
+                )
+        kept.append(reference)
+        dropped += len(group) - 1
+        start = end
+    warning = f"removed_identical_duplicate_slices={dropped}" if dropped else ""
+    return kept, warning
+
+
+def validate_geometry(
+    slices: list[pydicom.dataset.FileDataset],
+    positions: np.ndarray,
+    min_slices: int,
+    min_coverage_mm: float,
+    max_gap_ratio: float,
+) -> None:
+    if len(slices) < min_slices:
+        raise RuntimeError(f"Too few diagnostic slices: {len(slices)} < {min_slices}")
+    if len(positions) < 2:
+        raise RuntimeError("At least two positioned slices are required")
+    diffs = np.abs(np.diff(positions))
+    positive = diffs[diffs > 1e-3]
+    if len(positive) != len(diffs):
+        raise RuntimeError("Duplicate slice positions remain after deduplication")
+    median_spacing = float(np.median(positive))
+    gap_ratio = float(np.max(positive) / median_spacing)
+    coverage_mm = float(abs(positions[-1] - positions[0]) + median_spacing)
+    if gap_ratio > max_gap_ratio:
+        raise RuntimeError(
+            f"Large slice gap: ratio={gap_ratio:.3f} > {max_gap_ratio:.3f}"
+        )
+    if coverage_mm < min_coverage_mm:
+        raise RuntimeError(
+            f"Insufficient anatomical coverage: {coverage_mm:.1f} mm < {min_coverage_mm:.1f} mm"
+        )
 
 
 def infer_slice_spacing(
@@ -143,6 +263,9 @@ def convert_series(
     dicom_root: Path,
     output_root: Path,
     overwrite: bool,
+    min_slices: int,
+    min_coverage_mm: float,
+    max_gap_ratio: float,
 ) -> dict[str, str]:
     patient_id = str(row.patient_id)
     study_uid = str(row.study_uid)
@@ -166,11 +289,20 @@ def convert_series(
             "shape": "x".join(map(str, image.shape)),
             "dtype": str(image.get_data_dtype()),
             "status": "exists",
+            "warning": "",
             "error": "",
         }
 
     slices = read_dicom_slices(series_dir)
+    slices, localizer_warning = filter_localizers(slices)
+    slices, shape_warning = filter_slices_by_dominant_shape(slices)
     slices, row_cos, col_cos, positions = sort_slices(slices)
+    slices, duplicate_warning = deduplicate_identical_positions(slices, positions)
+    slices, row_cos, col_cos, positions = sort_slices(slices)
+    validate_geometry(slices, positions, min_slices, min_coverage_mm, max_gap_ratio)
+    warning = ";".join(
+        value for value in (localizer_warning, shape_warning, duplicate_warning) if value
+    )
     volume = stack_hu(slices)
     affine = build_affine(slices, row_cos, col_cos, positions)
 
@@ -189,6 +321,7 @@ def convert_series(
         "shape": "x".join(map(str, volume.shape)),
         "dtype": str(volume.dtype),
         "status": "converted",
+        "warning": warning,
         "error": "",
     }
 
@@ -220,6 +353,9 @@ def parse_args() -> argparse.Namespace:
         help="CSV describing generated NIfTI files.",
     )
     parser.add_argument("--overwrite", action="store_true", help="Rewrite existing NIfTI files.")
+    parser.add_argument("--min-slices", type=int, default=50)
+    parser.add_argument("--min-coverage-mm", type=float, default=200.0)
+    parser.add_argument("--max-gap-ratio", type=float, default=1.5)
     parser.add_argument(
         "--patient-id",
         default=None,
@@ -263,7 +399,15 @@ def main() -> None:
     total = len(manifest)
     for display_index, (_, row) in enumerate(manifest.iterrows(), start=1):
         try:
-            result = convert_series(row, args.dicom_root, args.output_root, args.overwrite)
+            result = convert_series(
+                row,
+                args.dicom_root,
+                args.output_root,
+                args.overwrite,
+                args.min_slices,
+                args.min_coverage_mm,
+                args.max_gap_ratio,
+            )
         except Exception as e:
             if args.on_error == "fail":
                 raise
@@ -277,6 +421,7 @@ def main() -> None:
                 "shape": "",
                 "dtype": "",
                 "status": "error",
+                "warning": "",
                 "error": f"{type(e).__name__}: {e}",
             }
         results.append(result)
@@ -288,6 +433,8 @@ def main() -> None:
         )
         if result["error"]:
             print(f"  error: {result['error']}")
+        if result.get("warning"):
+            print(f"  warning: {result['warning']}")
 
     fields = [
         "patient_id",
@@ -299,6 +446,7 @@ def main() -> None:
         "shape",
         "dtype",
         "status",
+        "warning",
         "error",
     ]
     with args.output_manifest.open("w", newline="") as f:
