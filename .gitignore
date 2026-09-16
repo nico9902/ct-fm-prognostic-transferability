@@ -2,8 +2,20 @@
 __pycache__/
 *.pyc
 .DS_Store
-data/raw/
-data/processed/
+
+# Research data and derived medical-imaging artifacts
+data/
+processed_sliding_npy/
+
+# Generated experiment outputs and runtime logs
 outputs/
-external/Rad-Jepa-3D-hf/
-external/RadJepa/
+logs/
+
+# Downloaded/vendor model repositories
+external/
+
+# Local configuration and editor files
+.env
+.env.*
+.idea/
+.vscode/
