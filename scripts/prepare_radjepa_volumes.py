@@ -62,7 +62,7 @@ def prepare_one(
         "radjepa_source_spacing_mm": "x".join(f"{v:.6g}" for v in source_spacing),
         "radjepa_effective_spacing_mm": "x".join(
             f"{source_shape[axis] * source_spacing[axis] / target:.6g}"
-            for axis, target in zip((2, 0, 1), TARGET_SHAPE)
+            for axis, target in zip((2, 1, 0), TARGET_SHAPE)
         ),
         "radjepa_canonicalized": str(bool(canonicalize)).lower(),
         "radjepa_preprocessing_version": "nlst_radjepa_v2",
@@ -79,8 +79,13 @@ def prepare_one(
     volume = np.asarray(image.dataobj, dtype=np.float32)
     volume = np.nan_to_num(volume, nan=-1000.0, posinf=window[1], neginf=window[0])
 
-    # NIfTI is loaded as (X, Y, Z); Rad-JEPA uses (C, D, H, W).
-    volume = np.moveaxis(volume, -1, 0)
+    # Canonical NIfTI is (X, Y, Z) = (R, A, S). Rad-JEPA uses (C, D, H, W) with
+    # D=S (depth), H=A (anterior-posterior, vertical in an axial slice), W=R
+    # (left-right, horizontal in an axial slice) -- the standard axial-view
+    # layout. A plain moveaxis(-1, 0) only relocates S to the front and would
+    # leave R, A in NIfTI order (H=R, W=A), which renders every axial slice
+    # rotated 90 degrees relative to a normal axial cross-section.
+    volume = np.transpose(volume, (2, 1, 0))
     volume = normalize_volume(volume, normalization, window)
     volume = resize_dhw(volume, TARGET_SHAPE)
     volume = volume[None, ...].astype(np.float32, copy=False)
