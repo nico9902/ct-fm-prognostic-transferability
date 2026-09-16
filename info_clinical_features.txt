@@ -37,6 +37,3 @@ clinical_scr_days2: Number of days from randomization to the T2 screening examin
 clinical_candx_days: Number of days from randomization to the first confirmed lung-cancer diagnosis.
 clinical_canc_free_days: Number of days from randomization until the participant was last known to be free of lung cancer.
 clinical_de_stag_7thed: Stage of the first primary lung cancer according to the AJCC 7th edition.
-
-
-bash scripts/run_server_train_transformer_token_cls_z_only_pilot_max_balanced_gpu1.sh

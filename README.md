@@ -12,9 +12,9 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-`requirements.txt` installs the data/download/conversion stack only. The
-CUDA/PyTorch stack for Rad-JEPA-3D is installed separately on the server so pip
-does not accidentally select an incompatible PyTorch CUDA wheel.
+`requirements.txt` contains the complete data, training, and Rad-JEPA-3D
+dependency stack. The CUDA/PyTorch setup script can install the pinned CUDA 12.1
+runtime on a compatible Linux server.
 
 ## 2. Test on exactly 100 eligible longitudinal subjects
 
@@ -114,9 +114,8 @@ PYTHON=.venv/bin/python bash scripts/install_radjepa_cuda_deps.sh
 ```
 
 The script intentionally installs CUDA 12.1 PyTorch wheels by default, avoiding
-CUDA 13 wheels on servers whose NVIDIA driver only supports CUDA 12.x. It also
-installs `requirements-training.txt` after PyTorch, so Lightning and W&B use the
-same environment.
+CUDA 13 wheels on servers whose NVIDIA driver only supports CUDA 12.x. It then
+installs the consolidated `requirements.txt` file.
 
 Build the latent transition table after embeddings exist:
 

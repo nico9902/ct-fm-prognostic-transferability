@@ -15,7 +15,7 @@ TORCH_INDEX_URL="${TORCH_INDEX_URL:-https://download.pytorch.org/whl/cu121}"
 CAUSAL_CONV1D_VERSION="${CAUSAL_CONV1D_VERSION:-1.5.0.post8}"
 MAMBA_SSM_VERSION="${MAMBA_SSM_VERSION:-2.2.4}"
 TRANSFORMERS_VERSION="${TRANSFORMERS_VERSION:-4.46.3}"
-TRAINING_REQUIREMENTS="${TRAINING_REQUIREMENTS:-requirements-training.txt}"
+REQUIREMENTS_FILE="${REQUIREMENTS_FILE:-requirements.txt}"
 
 "${PYTHON}" -m pip install --upgrade pip setuptools wheel ninja packaging
 
@@ -35,10 +35,10 @@ TRAINING_REQUIREMENTS="${TRAINING_REQUIREMENTS:-requirements-training.txt}"
   "mamba-ssm==${MAMBA_SSM_VERSION}" \
   --no-build-isolation
 
-if [[ -f "${TRAINING_REQUIREMENTS}" ]]; then
-  "${PYTHON}" -m pip install -r "${TRAINING_REQUIREMENTS}"
-  # Re-apply the compatible Transformers pin in case the training requirements
-  # request a newer 5.x release that is incompatible with mamba-ssm 2.2.4.
+if [[ -f "${REQUIREMENTS_FILE}" ]]; then
+  "${PYTHON}" -m pip install -r "${REQUIREMENTS_FILE}"
+  # Re-apply the compatible Transformers pin in case the requirements file
+  # is changed to request a newer 5.x release incompatible with mamba-ssm 2.2.4.
   "${PYTHON}" -m pip install --upgrade --force-reinstall \
     "transformers==${TRANSFORMERS_VERSION}"
 fi

@@ -1,3 +1,28 @@
+# Consolidated project requirements.
+#
+# This contains the project, training, and Python dependencies installed by
+# scripts/install_radjepa_cuda_deps.sh.
+# For the Rad-JEPA CUDA stack, use a Linux/CUDA-compatible Python environment.
+
+# PyTorch CUDA 12.1 stack used by scripts/install_radjepa_cuda_deps.sh
+--extra-index-url https://download.pytorch.org/whl/cu121
+torch==2.5.1
+torchvision==0.20.1
+torchaudio==2.5.1
+
+# Rad-JEPA-3D encoder and transformer stack
+transformers==4.46.3
+causal-conv1d==1.5.0.post8
+mamba-ssm==2.2.4
+einops>=0.8
+huggingface_hub>=0.23.2,<1.0
+
+# Training and experiment tracking
+lightning>=2.4
+wandb>=0.18
+
+# Data processing and medical-imaging formats
+numpy>=1.26
 pandas>=2.0
 openpyxl>=3.1
 requests>=2.31
@@ -8,14 +33,13 @@ pillow>=10.0
 pylibjpeg>=2.0
 pylibjpeg-libjpeg>=2.1
 python-gdcm>=3.0.10; platform_system == "Linux"
-einops>=0.8
-huggingface_hub>=0.23.2,<1.0
 scipy>=1.14
 scikit-learn>=1.4
+PyYAML>=6.0
 
-# PyTorch is intentionally not listed here. Install the CUDA runtime for
-# Rad-JEPA-3D with:
-#   PYTHON=.venv/bin/python bash scripts/install_radjepa_cuda_deps.sh
-#
-# Keep huggingface_hub below 1.0 because the current server stack includes
-# transformers/tokenizers versions that require huggingface-hub<1.0.
+# Build/runtime utilities used by the CUDA dependency installer
+pip>=24.0
+setuptools>=70
+wheel>=0.44
+ninja>=1.11
+packaging>=24.0
