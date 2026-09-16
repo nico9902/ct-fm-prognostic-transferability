@@ -19,3 +19,7 @@ external/
 .env.*
 .idea/
 .vscode/
+
+# Local research notes and generated visualizations
+Proposta di ricerca – Latent World Model per la progressione del NSCLC.md
+radjepa_sliding_sample_window_slices.png
