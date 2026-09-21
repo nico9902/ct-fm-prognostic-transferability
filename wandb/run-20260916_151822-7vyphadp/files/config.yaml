@@ -1,0 +1,125 @@
+_wandb:
+    value:
+        cli_version: 0.30.0
+        e:
+            oy7namhudgkbtddkt8cot7ptnzm5qqr4:
+                args:
+                    - --labels
+                    - /ssd2/domenico/datasets/nlst/cohort_1000_setup/staged/diagnostic_labels/nlst_scan_diagnostic_labels.parquet
+                    - --npy-manifest
+                    - /ssd2/domenico/datasets/nlst/processed/nlst/pilot_1000_balanced/sliding_npy_manifest.csv
+                    - --output-dir
+                    - /ssd2/domenico/datasets/nlst/cohort_1000_setup/staged/diagnostic_decodability
+                    - --device
+                    - cuda:0
+                    - --encode-batch-size
+                    - "8"
+                    - --train-batch-size
+                    - "128"
+                    - --epochs
+                    - "100"
+                    - --patience
+                    - "15"
+                    - --wandb
+                codePath: scripts/run_diagnostic_state_decodability.py
+                codePathLocal: scripts/run_diagnostic_state_decodability.py
+                cpu_count: 16
+                cpu_count_logical: 32
+                cudaVersion: "12.8"
+                disk:
+                    /:
+                        total: "471415693312"
+                        used: "108679266304"
+                email: domenico.paolo1999@gmail.com
+                executable: /home/domenico/lung-jepa-world-model/.venv/bin/python
+                git:
+                    commit: 985ce6b1569cbf39d2d801064649b416e9ec5682
+                    remote: https://github.com/nico9902/lung-jepa-world-model
+                gpu: Tesla V100-PCIE-16GB
+                gpu_count: 4
+                gpu_nvidia:
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "17179869184"
+                      name: Tesla V100-PCIE-16GB
+                      uuid: GPU-70cb4254-c439-93d4-1f5b-fbfe9d8e3d0c
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "17179869184"
+                      name: Tesla V100-PCIE-16GB
+                      uuid: GPU-241d12ab-4271-e626-22b3-668ce9402ee3
+                    - architecture: Volta
+                      cudaCores: 5120
+                      memoryTotal: "17179869184"
+                      name: Tesla V100-PCIE-16GB
+                      uuid: GPU-4a650884-6655-c370-6f9f-14238cbb562d
+                    - architecture: Ampere
+                      cudaCores: 6912
+                      memoryTotal: "85899345920"
+                      name: NVIDIA A100 80GB PCIe
+                      uuid: GPU-81bd61f7-09c3-c49e-287d-9804bc6e9e01
+                host: standard-Super-Server
+                memory:
+                    total: "404323160064"
+                os: Linux-5.15.0-140-generic-x86_64-with-glibc2.35
+                program: /home/domenico/lung-jepa-world-model/scripts/run_diagnostic_state_decodability.py
+                python: CPython 3.10.12
+                root: .
+                startedAt: "2026-09-16T13:18:22.946551Z"
+                writerId: oy7namhudgkbtddkt8cot7ptnzm5qqr4
+        m:
+            - "1": trainer/global_step
+              "6":
+                - 3
+              "7": []
+            - "2": '*'
+              "5": 1
+              "6":
+                - 1
+              "7": []
+        python_version: 3.10.12
+        t:
+            "1":
+                - 1
+                - 5
+                - 11
+                - 41
+                - 49
+                - 53
+                - 106
+            "2":
+                - 1
+                - 5
+                - 11
+                - 41
+                - 49
+                - 53
+                - 106
+            "3":
+                - 2
+                - 7
+                - 13
+                - 16
+                - 62
+                - 66
+            "4": 3.10.12
+            "5": 0.30.0
+            "6": 4.46.3
+            "12": 0.30.0
+            "13": linux-x86_64
+attention:
+    value: false
+epochs:
+    value: 100
+input_dim:
+    value: 768
+patience:
+    value: 15
+pos_weight:
+    value: 3.310843373493976
+representation:
+    value: sliding_meanmax
+seed:
+    value: 3
+task:
+    value: fibrosis_or_scarring

@@ -1,0 +1,17 @@
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name    | Type              | Params | Mode  | FLOPs
+--------------------------------------------------------------
+0 | model   | GateModel         | 99.1 K | train | 0
+1 | loss_fn | BCEWithLogitsLoss | 0      | train | 0
+--------------------------------------------------------------
+99.1 K    Trainable params
+0         Non-trainable params
+99.1 K    Total params
+0.396     Total estimated model params size (MB)
+11        Modules in train mode
+0         Modules in eval mode
+0         Total Flops
+/home/domenico/lung-jepa-world-model/.venv/lib/python3.10/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:434: The 'val_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=31` in the `DataLoader` to improve performance.
+/home/domenico/lung-jepa-world-model/.venv/lib/python3.10/site-packages/lightning/pytorch/trainer/connectors/data_connector.py:434: The 'train_dataloader' does not have many workers which may be a bottleneck. Consider increasing the value of the `num_workers` argument` to `num_workers=31` in the `DataLoader` to improve performance.
+/home/domenico/lung-jepa-world-model/.venv/lib/python3.10/site-packages/lightning/pytorch/loops/fit_loop.py:321: The number of training batches (14) is smaller than the logging interval Trainer(log_every_n_steps=50). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.

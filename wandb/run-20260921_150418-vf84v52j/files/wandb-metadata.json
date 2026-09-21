@@ -1,0 +1,69 @@
+{
+  "os": "Linux-5.15.0-140-generic-x86_64-with-glibc2.35",
+  "python": "CPython 3.10.12",
+  "startedAt": "2026-09-21T13:04:18.799946Z",
+  "args": [
+    "--root",
+    "/home/domenico/lung-jepa-world-model/outputs/colipri_temporal_adapter_ablation",
+    "--device",
+    "cuda",
+    "--wandb-project",
+    "nlst-colipri-temporal-adapter"
+  ],
+  "program": "/home/domenico/lung-jepa-world-model/scripts/evaluate_colipri_temporal_adapter_downstream_gpu.py",
+  "codePath": "scripts/evaluate_colipri_temporal_adapter_downstream_gpu.py",
+  "codePathLocal": "scripts/evaluate_colipri_temporal_adapter_downstream_gpu.py",
+  "git": {
+    "remote": "https://github.com/nico9902/lung-jepa-world-model",
+    "commit": "985ce6b1569cbf39d2d801064649b416e9ec5682"
+  },
+  "email": "domenico.paolo1999@gmail.com",
+  "root": "/home/domenico/lung-jepa-world-model",
+  "host": "standard-Super-Server",
+  "executable": "/home/domenico/lung-jepa-world-model/.venv/bin/python",
+  "cpu_count": 16,
+  "cpu_count_logical": 32,
+  "gpu": "Tesla V100-PCIE-16GB",
+  "gpu_count": 4,
+  "disk": {
+    "/": {
+      "total": "471415693312",
+      "used": "108299141120"
+    }
+  },
+  "memory": {
+    "total": "404323160064"
+  },
+  "gpu_nvidia": [
+    {
+      "name": "Tesla V100-PCIE-16GB",
+      "memoryTotal": "17179869184",
+      "cudaCores": 5120,
+      "architecture": "Volta",
+      "uuid": "GPU-70cb4254-c439-93d4-1f5b-fbfe9d8e3d0c"
+    },
+    {
+      "name": "Tesla V100-PCIE-16GB",
+      "memoryTotal": "17179869184",
+      "cudaCores": 5120,
+      "architecture": "Volta",
+      "uuid": "GPU-241d12ab-4271-e626-22b3-668ce9402ee3"
+    },
+    {
+      "name": "Tesla V100-PCIE-16GB",
+      "memoryTotal": "17179869184",
+      "cudaCores": 5120,
+      "architecture": "Volta",
+      "uuid": "GPU-4a650884-6655-c370-6f9f-14238cbb562d"
+    },
+    {
+      "name": "NVIDIA A100 80GB PCIe",
+      "memoryTotal": "85899345920",
+      "cudaCores": 6912,
+      "architecture": "Ampere",
+      "uuid": "GPU-81bd61f7-09c3-c49e-287d-9804bc6e9e01"
+    }
+  ],
+  "cudaVersion": "12.8",
+  "writerId": "c3k36fyw7ijawyu1akytkpc3ufv9qe7i"
+}

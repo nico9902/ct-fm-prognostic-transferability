@@ -1,0 +1,5 @@
+nohup: ignoring input
+Started diagnostic decodability experiments
+PID: 201199
+Log: /ssd2/domenico/datasets/nlst/cohort_1000_setup/staged/diagnostic_decodability/logs/diagnostic_decodability_20260916_150620.log
+Monitor: tail -f /ssd2/domenico/datasets/nlst/cohort_1000_setup/staged/diagnostic_decodability/logs/diagnostic_decodability_20260916_150620.log

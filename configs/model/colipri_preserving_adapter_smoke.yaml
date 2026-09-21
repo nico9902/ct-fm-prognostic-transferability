@@ -1,0 +1,28 @@
+output_dir: outputs/colipri_preserving_adapter_smoke
+embedding_cache: outputs/colipri_decodability/mean/cache
+prognostic_labels: data/nlst/metadata/nlst/prognostic_labels/pilot_1000_balanced/nlst_scan_prognostic_labels.csv
+diagnostic_manifest: outputs/colipri_decodability/experiment_scan_manifest.csv
+patient_splits: outputs/colipri_decodability/patient_splits.csv
+reference_pairs: outputs/colipri_temporal_adapter_corrected/pairs_manifest.csv
+seeds: [0]
+probe_seeds: [0]
+variants:
+  - {name: native, dim: 864, sigreg: 0.0, native: true}
+  - {name: residual864_sigreg, dim: 864, sigreg: 0.01}
+  - {name: bottleneck256_sigreg, dim: 256, sigreg: 0.01}
+adapter_epochs: 2
+transition_epochs: 2
+patience: 2
+batch_size: 128
+hidden_dim: 256
+decoder_hidden: 512
+gamma: 0.1
+anchor_weight: 0.1
+sigreg_projections: 256
+lr: 0.001
+probe_epochs: 2
+probe_patience: 2
+validation_auroc_margin: 0.02
+tasks: [primary_future_cancer_1y]
+wandb_project: nlst-colipri-temporal-adapter
+wandb_group: preserving-adapter-smoke
