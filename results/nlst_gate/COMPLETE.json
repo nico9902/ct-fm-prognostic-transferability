@@ -1,0 +1,24 @@
+{
+  "seeds": [
+    42,
+    123,
+    2026
+  ],
+  "smoke": false,
+  "report": "results/nlst_gate/FINAL_GATE_REPORT.md",
+  "experiments": [
+    "G0",
+    "G1",
+    "G2",
+    "G3",
+    "G_delta",
+    "G_abs",
+    "G_identity",
+    "D0",
+    "D1",
+    "D2",
+    "D_delta",
+    "D_abs",
+    "D_identity"
+  ]
+}

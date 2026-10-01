@@ -1,0 +1,25 @@
+{
+  "patients": 999,
+  "scans": 2984,
+  "pairs": 1984,
+  "split_counts": {
+    "train": 599,
+    "val": 200,
+    "test": 200
+  },
+  "prior_gate": "results/nlst_gate",
+  "cohort_unchanged": true,
+  "targets": [
+    "primary_future_cancer_1y",
+    "primary_future_cancer_2y",
+    "primary_future_cancer_3y"
+  ],
+  "primary": "primary_future_cancer_2y",
+  "feature_sha256": "f83871e7190d405452bcb0d57660b9df18d34c9f5cc606fb2943a32172f0b319",
+  "prior_split_sha256": "3392c5e0221bf346e1ca7a928f0f8a374db6f6a81639370d55b3e124c3e8d0f0",
+  "interval_policy": "fixed prospective forecast horizon; realized dt only for legacy reproduction",
+  "forecast_interval": 365.0,
+  "test_usage": "evaluation only, after oracle and loss-weight selections lock",
+  "target_definition": "1/2/3y after the actual t+1 landmark; prior cancer excluded; short follow-up masked",
+  "input_policy": "current embedding and configured 365-day query only; realized dt is legacy-only"
+}

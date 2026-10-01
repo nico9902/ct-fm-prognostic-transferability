@@ -1,0 +1,33 @@
+{
+  "patient_id": "215070",
+  "scans": 2,
+  "clinical_round_linkage_verified": true,
+  "patient_reinstated": false,
+  "encoder_frozen": true,
+  "checkpoint_sha256": "97d66586507d1f48577b5149777d02e12d25787435a2a295cac5563df9291c14",
+  "revision": "6f2d04e59c8a2ade62f62f0bd376fd757c966983",
+  "shapes": {
+    "mean": [
+      2,
+      864
+    ],
+    "max": [
+      2,
+      864
+    ],
+    "attention": [
+      2,
+      768
+    ],
+    "dense_per_scan": [
+      864,
+      24,
+      24,
+      24
+    ]
+  },
+  "verified_timepoints": [
+    "T1",
+    "T2"
+  ]
+}

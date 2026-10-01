@@ -1,0 +1,93 @@
+{
+  "selected": {
+    "direct_C1": {
+      "mode": "direct",
+      "variant": "C1",
+      "clinical_weight": 0.0,
+      "name": "direct_C1_w0",
+      "validation_2y_auroc": 0.7852781096508695
+    },
+    "direct_C2": {
+      "mode": "direct",
+      "variant": "C2",
+      "clinical_weight": 5.0,
+      "name": "direct_C2_w5",
+      "validation_2y_auroc": 0.7863666533917429
+    },
+    "direct_C3": {
+      "mode": "direct",
+      "variant": "C3",
+      "clinical_weight": 0.1,
+      "name": "direct_C3_w0.1",
+      "validation_2y_auroc": 0.7839373423602813
+    },
+    "direct_C4": {
+      "mode": "direct",
+      "variant": "C4",
+      "clinical_weight": 0.1,
+      "name": "direct_C4_w0.1",
+      "validation_2y_auroc": 0.7826762246117084
+    },
+    "residual_C1": {
+      "mode": "residual",
+      "variant": "C1",
+      "clinical_weight": 0.0,
+      "name": "residual_C1_w0",
+      "validation_2y_auroc": 0.783207221558476
+    },
+    "residual_C2": {
+      "mode": "residual",
+      "variant": "C2",
+      "clinical_weight": 5.0,
+      "name": "residual_C2_w5",
+      "validation_2y_auroc": 0.7848134873224479
+    },
+    "residual_C3": {
+      "mode": "residual",
+      "variant": "C3",
+      "clinical_weight": 0.1,
+      "name": "residual_C3_w0.1",
+      "validation_2y_auroc": 0.7798619407938405
+    },
+    "residual_C4": {
+      "mode": "residual",
+      "variant": "C4",
+      "clinical_weight": 0.1,
+      "name": "residual_C4_w0.1",
+      "validation_2y_auroc": 0.7812159830080977
+    },
+    "residual_geometry_only": {
+      "mode": "residual",
+      "variant": "geometry_only",
+      "clinical_weight": 0.0,
+      "name": "residual_geometry_only_w0",
+      "validation_2y_auroc": 0.7826762246117084
+    },
+    "residual_risk_only": {
+      "mode": "residual",
+      "variant": "risk_only",
+      "clinical_weight": 1.0,
+      "name": "residual_risk_only_w1",
+      "validation_2y_auroc": 0.7761715120138059
+    }
+  },
+  "primary_clinical": {
+    "mode": "direct",
+    "variant": "C2",
+    "clinical_weight": 5.0,
+    "name": "direct_C2_w5",
+    "validation_2y_auroc": 0.7863666533917429
+  },
+  "selection": "mean validation-only 2y frozen-oracle AUROC across seeds; smaller loss weight breaks ties",
+  "test_not_used": true,
+  "seeds": [
+    42,
+    123,
+    2026
+  ],
+  "clinical_grid": [
+    0.1,
+    1.0,
+    5.0
+  ]
+}

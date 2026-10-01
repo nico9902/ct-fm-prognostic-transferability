@@ -1,0 +1,33 @@
+/home/domenico/lung-jepa-world-model/.venv/lib/python3.10/site-packages/_distutils_hack/__init__.py:53: UserWarning: Reliance on distutils from stdlib is deprecated. Users must rely on setuptools to provide the distutils module. Avoid importing distutils or import setuptools first, and avoid setting SETUPTOOLS_USE_DISTUTILS=stdlib. Register concerns at https://github.com/pypa/setuptools/issues/new?template=distutils-deprecation.yml
+  warnings.warn(
+{"original_ct_shape": [1, 512, 512, 156], "original_spacing_mm": [0.78125, 0.78125, 1.8], "resampled_ct_shape": [1, 200, 200, 140], "colipri_input_shape": [1, 1, 192, 192, 192], "dense_grid_shape": [1, 864, 24, 24, 24], "dense_token_shape": [1, 13824, 864], "pooled_embedding_shape": {"mean": [1, 864], "max": [1, 864], "attention": [1, 768]}, "smoke_seconds": 9.538385684136301, "official_attention_equivalence": true}
+encoded 1/2 elapsed=10.2s
+{
+  "patient_id": "215070",
+  "scans": 2,
+  "clinical_round_linkage_verified": false,
+  "patient_reinstated": false,
+  "encoder_frozen": true,
+  "checkpoint_sha256": "97d66586507d1f48577b5149777d02e12d25787435a2a295cac5563df9291c14",
+  "revision": "6f2d04e59c8a2ade62f62f0bd376fd757c966983",
+  "shapes": {
+    "mean": [
+      2,
+      864
+    ],
+    "max": [
+      2,
+      864
+    ],
+    "attention": [
+      2,
+      768
+    ],
+    "dense_per_scan": [
+      864,
+      24,
+      24,
+      24
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "url": "https://nlst.cancerimagingarchive.net/nbia-api/services/v1/getSeries?Collection=NLST&PatientID=215070&format=json",
+  "status": 200,
+  "content_type": "application/json"
+}

@@ -1,0 +1,12 @@
+output_dir: outputs/colipri_token_alignment_audit
+token_cache: outputs/colipri_native_spatial_token_world_model/native_spatial_tokens.npy
+embedding_cache: outputs/colipri_decodability/mean/cache
+prognostic_labels: data/nlst/metadata/nlst/prognostic_labels/pilot_1000_balanced/nlst_scan_prognostic_labels.csv
+diagnostic_manifest: outputs/colipri_decodability/experiment_scan_manifest.csv
+patient_splits: outputs/colipri_decodability/patient_splits.csv
+reference_pairs: outputs/colipri_preserving_adapter/pairs_manifest.csv
+batch_size: 32
+random_controls: 5
+random_seed: 20260922
+wandb_project: nlst-colipri-temporal-adapter
+wandb_group: token-alignment-audit-v1

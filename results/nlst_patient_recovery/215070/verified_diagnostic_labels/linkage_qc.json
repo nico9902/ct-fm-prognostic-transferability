@@ -1,0 +1,48 @@
+{
+  "n_series": 2,
+  "n_patients": 1,
+  "duplicate_series_uid": 0,
+  "duplicate_patient_round": 0,
+  "linkage_qc_counts": {
+    "ok": 2
+  },
+  "chronology_qc_counts": {
+    "ok": 1
+  },
+  "screen_round_counts": {
+    "T1|ok": 1,
+    "T2|ok": 1
+  },
+  "recommendation_fields_available": [],
+  "cancer_outcome_fields": [
+    "cancyr",
+    "can_scr",
+    "canc_rpt_link",
+    "candx_days",
+    "canc_free_days"
+  ],
+  "abnormality_code_mapping": {
+    "nodule_ge_4mm": "51",
+    "micronodule_lt_4mm": "52",
+    "emphysema": "59",
+    "consolidation": "58",
+    "fibrosis_or_scarring": "61",
+    "adenopathy_or_mass": "56",
+    "significant": [
+      "51",
+      "52",
+      "53",
+      "54",
+      "55",
+      "56",
+      "57",
+      "58",
+      "59",
+      "60",
+      "61",
+      "62",
+      "63",
+      "64"
+    ]
+  }
+}

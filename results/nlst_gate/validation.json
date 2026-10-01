@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "neural_probe_fits": 78,
+  "projector_fits": 3,
+  "metric_rows": 702,
+  "patients": 999,
+  "scans": 2984,
+  "pairs": 1984,
+  "checks": [
+    "cohort_audit.csv",
+    "cohort_audit.md",
+    "experiment_summary.csv",
+    "experiment_summary.md",
+    "FINAL_GATE_REPORT.md",
+    "paired_comparisons.csv",
+    "bootstrap_intervals.csv",
+    "longitudinal_table.csv",
+    "patient_splits.csv",
+    "feature_metadata.csv",
+    "no_change_baseline.csv"
+  ]
+}

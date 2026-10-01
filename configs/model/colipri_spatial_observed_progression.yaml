@@ -1,0 +1,27 @@
+output_dir: outputs/colipri_spatial_observed_progression
+token_cache: outputs/colipri_native_spatial_token_world_model/native_spatial_tokens.npy
+pooling_report: outputs/colipri_native_spatial_token_world_model/pooling_equivalence.json
+embedding_cache: outputs/colipri_decodability/mean/cache
+prognostic_labels: data/nlst/metadata/nlst/prognostic_labels/pilot_1000_balanced/nlst_scan_prognostic_labels.csv
+diagnostic_manifest: outputs/colipri_decodability/experiment_scan_manifest.csv
+patient_splits: outputs/colipri_decodability/patient_splits.csv
+reference_pairs: outputs/colipri_preserving_adapter/pairs_manifest.csv
+reference_triples: outputs/colipri_observed_progression_prognosis/triple_manifest.csv
+seeds: [0, 1, 2, 3, 4]
+models:
+  - mean_linear
+  - token_attention_t1
+  - token_gated_control
+  - token_gated_history
+  - oracle_mean_linear
+  - oracle_token_attention
+epochs: 150
+patience: 20
+batch_size: 32
+hidden_dim: 128
+time_dim: 32
+dropout: 0.1
+lr: 0.001
+bootstrap_samples: 2000
+wandb_project: nlst-colipri-temporal-adapter
+wandb_group: spatial-observed-progression-v1

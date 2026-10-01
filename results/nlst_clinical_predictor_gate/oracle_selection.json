@@ -1,0 +1,22 @@
+{
+  "chosen_kind": "linear",
+  "selection": "validation-only 2y ensemble AUROC",
+  "seeds": [
+    42,
+    123,
+    2026
+  ],
+  "frozen": true,
+  "checkpoint": "checkpoints/oracle_risk_head.pt",
+  "ensemble": "arithmetic mean of logits; no probability calibration",
+  "validation_scores": [
+    {
+      "kind": "linear",
+      "validation_2y_auroc": 0.8399840700915968
+    },
+    {
+      "kind": "mlp",
+      "validation_2y_auroc": 0.8312226204699322
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "selection": {
+    "best_objective_config": "A",
+    "selection": "mean validation latent MSE across world-model seeds",
+    "time_configs": [
+      "A__time_none",
+      "A__time_scalar",
+      "A__time_log",
+      "A__time_fourier"
+    ]
+  },
+  "config": "A",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "G3": "fixed seed ensemble of existing validation-selected standardized-delta residual MLP",
+  "uncertainty": "probe seeds; predictor seed metrics also reported separately",
+  "inputs": "current global state and interscan interval only; no clinical/future-scan inputs",
+  "manifest_verified": true
+}

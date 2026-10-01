@@ -1,0 +1,66 @@
+{
+  "n_scans_total": 2,
+  "n_patients_total": 1,
+  "n_scans_by_round": {
+    "T1": 1,
+    "T2": 1
+  },
+  "n_excluded_prior_cancer_diagnosis": 0,
+  "n_missing_scan_day_anchor": 0,
+  "cancer_endpoint": {
+    "n_eligible_scans": 2,
+    "n_eligible_patients": 1,
+    "n_events": 2,
+    "n_censored": 0,
+    "n_events_by_round": {
+      "T1": 1,
+      "T2": 1
+    },
+    "n_censored_by_round": {},
+    "cancer_time_days_distribution": {
+      "count": 2.0,
+      "mean": 943.0,
+      "std": 188.09040379562165,
+      "min": 810.0,
+      "25%": 876.5,
+      "50%": 943.0,
+      "75%": 1009.5,
+      "max": 1076.0
+    },
+    "cancer_censor_days_distribution": {
+      "count": 0.0,
+      "mean": null,
+      "std": null,
+      "min": null,
+      "25%": null,
+      "50%": null,
+      "75%": null,
+      "max": null
+    }
+  },
+  "future_cancer_1y": {
+    "n_positive": 0,
+    "n_negative": 2,
+    "n_unknown_insufficient_followup": 0,
+    "n_not_eligible": 0,
+    "prevalence_among_labeled": 0.0
+  },
+  "future_cancer_2y": {
+    "n_positive": 0,
+    "n_negative": 2,
+    "n_unknown_insufficient_followup": 0,
+    "n_not_eligible": 0,
+    "prevalence_among_labeled": 0.0
+  },
+  "future_cancer_3y": {
+    "n_positive": 2,
+    "n_negative": 0,
+    "n_unknown_insufficient_followup": 0,
+    "n_not_eligible": 0,
+    "prevalence_among_labeled": 1.0
+  },
+  "mortality_endpoints": {
+    "status": "unavailable",
+    "reason": "No vital-status/death table exists among the locally available NLST clinical tables sourced from IDC (nlst_prsn, nlst_canc, nlst_screen, nlst_ctab, nlst_ctabc). Verified by listing s3://idc-open-metadata/bigquery_export/idc_v24_clinical/ which exposes only these five nlst_* tables. os_event, os_time_days, lung_cancer_death_event, lung_cancer_death_time_days, other_cause_death, death_1y/3y/5y and lung_cancer_death_3y/5y are emitted as NA for all rows."
+  }
+}

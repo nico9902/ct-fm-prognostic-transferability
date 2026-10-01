@@ -1,0 +1,15 @@
+{
+  "shape": [
+    1,
+    167,
+    256,
+    256
+  ],
+  "dtype": "float32",
+  "finite": true,
+  "min": 0.0,
+  "max": 1.0,
+  "matches_existing_T2_volume_exactly": true,
+  "original_T1_retry_status": "error",
+  "patient_reinstated": false
+}
