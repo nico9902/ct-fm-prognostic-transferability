@@ -18,8 +18,7 @@ Run scripts from the repository root. Scripts remain in one directory because th
 | Representation probing | `run_lung1_embedding_probing.py` |
 | External evaluation | `freeze_lung1_models.py`, `apply_radiogenomics_external.py`, `analyze_external_lora_calibration.py` |
 | Shared Cox optimizer | `ridge_cox_lbfgs.py` |
-| Manuscript artifacts | `../manuscript/scripts/` |
 
 `launch_*` scripts orchestrate runs; `analyze_*`, `compare_*`, `summarize_*` and statistical `test_*` scripts consume experiment outputs. The latter are research analyses, distinct from the unit tests in `tests/`.
 
-See the [protocol index](../docs/README.md) for experimental settings and the [root README](../README.md) for environment setup. Input data and pretrained weights must be supplied separately.
+See the [root README](../README.md) for environment setup. Input data and pretrained weights must be supplied separately.

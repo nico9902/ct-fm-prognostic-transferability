@@ -39,3 +39,7 @@ htmlcov/
 *.pth
 *.pt
 *.safetensors
+
+# Manuscript and documentation maintained locally
+/manuscript/
+/docs/
