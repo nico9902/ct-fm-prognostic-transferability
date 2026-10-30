@@ -1,210 +1,84 @@
-# lung-jepa-world-model — NLST data bootstrap
+# CT foundation model prognostic transferability
 
-This starter project builds a longitudinal NLST CT cohort for the first
-Rad-JEPA-3D temporal/world-model experiments.
+Research code for **Prognostic transferability of CT foundation models in non-small-cell lung cancer: adaptation, tumour dependence, incremental clinical value and external evaluation**.
 
-## 1. Environment
+[Manuscript](manuscript/main.tex) · [Results](docs/results/README.md) · [Protocols](docs/README.md) · [Code guide](scripts/README.md)
+
+The study compares COLIPRI, TANGERINE, Rad-JEPA-3D, CT-CLIP and DINOv3 for overall-survival prediction on **LUNG1**, with external evaluation on **NSCLC-Radiogenomics**. Analyses cover frozen representations, survival-specific adaptation, training-set size, tumour masking and incremental value beyond clinical and radiomic predictors. The manuscript is a working draft; see its verification record for outstanding issues.
+
+## Study design
+
+![Figure 1. Study design and analysis workflow](docs/assets/study_overview.png)
+
+**Figure 1.** LUNG1 development cohort (416 patients), five foundation models, clinical and tumour-centred comparators, shared nested cross-validation, and external evaluation on NSCLC-Radiogenomics (143 patients). [Vector PDF](manuscript/figures/study_overview.pdf) · [Full caption](manuscript/figures/study_overview.tex).
+
+## Main results
+
+Uno's concordance at 36 months. Internal values are mean-fold estimates; external intervals are 95% bootstrap intervals conditional on the frozen models. Primary frozen encoders use PCA16 and a regularized Cox head.
+
+| Model | LUNG1 | External (95% interval) |
+| --- | ---: | ---: |
+| COLIPRI | 0.617 | 0.627 (0.540–0.719) |
+| TANGERINE | 0.599 | 0.649 (0.550–0.741) |
+| DINOv3 | 0.575 | 0.643 (0.556–0.730) |
+| Rad-JEPA-3D | 0.539 | 0.530 (0.436–0.627) |
+| CT-CLIP | 0.530 | 0.482 (0.388–0.581) |
+| Stage + tumour volume | 0.588 | 0.605 (0.508–0.702) |
+| GTV radiomics | 0.591 | 0.617 (0.508–0.723) |
+| Clinical + tumour volume | 0.565 | 0.646 (0.547–0.749) |
+
+- **Frozen representations:** COLIPRI ranked highest internally, but no encoder significantly outperformed stage plus volume or radiomics after Holm correction.
+- **Adaptation:** trainable heads and encoder adaptation did not improve internal discrimination over the frozen linear head; encoders showed no advantage in label efficiency.
+- **Tumour dependence:** hiding the tumour changed discrimination by at most 0.013, despite a marked change in COLIPRI's representation.
+- **External evaluation:** discrimination transported for the stronger encoders, but absolute risks were miscalibrated. Predicted 36-month mortality ranged from 37% to 85%, versus 25% observed.
+
+These results do not establish equivalence where comparisons were inconclusive. Exploratory external LoRA results are separate from the frozen benchmark. See the [result gallery and aggregate CSV](docs/results/README.md) for all four research questions, uncertainty and provenance.
+
+![Frozen discrimination and incremental clinical value](docs/assets/results_rq1.png)
+
+## Repository guide
+
+| Location | Contents |
+| --- | --- |
+| [`manuscript/`](manuscript/README.md) | LaTeX manuscript, bibliography, figures, tables and artifact generators |
+| [`scripts/`](scripts/README.md) | Cohort preparation, model extraction, survival experiments and analysis |
+| [`docs/`](docs/README.md) | Protocols, audits and experiment reports |
+| [`docs/planning/`](docs/planning/) | Research proposal and experiment progress record |
+| [`configs/lung1_e1_folds.csv`](configs/lung1_e1_folds.csv) | Locked patient fold assignments |
+| [`tests/`](tests/) | Survival metrics, Cox fitting and adaptation component checks |
+| [`third_party/ctclip/`](third_party/ctclip/README.md) | Documented CT-CLIP compatibility code |
+
+`data/`, `external/`, `outputs/`, `logs/`, `wandb/` and virtual environments are local, ignored directories. They contain datasets, downloaded model code/weights, derived features and run artifacts, and are not included in a fresh clone. Existing analysis output paths are retained for reproducibility.
+
+## Environment
+
+Run commands from the repository root. The full encoder stack targets Linux with CUDA; Rad-JEPA additionally needs the Mamba CUDA extensions.
 
 ```bash
-cd lung-jepa-world-model
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
 ```
 
-`requirements.txt` contains the complete data, training, and Rad-JEPA-3D
-dependency stack. The CUDA/PyTorch setup script can install the pinned CUDA 12.1
-runtime on a compatible Linux server.
+For the CUDA 12.1 installation workflow, see [`scripts/install_radjepa_cuda_deps.sh`](scripts/install_radjepa_cuda_deps.sh). Additional environments/dependencies are described in [`requirements-colipri.txt`](requirements-colipri.txt) and [`requirements-radiomics.txt`](requirements-radiomics.txt). COLIPRI and TANGERINE require different `timm` versions; follow the isolated dependency instructions in the COLIPRI requirements. DINOv3 setup is documented in the [encoder setup guide](docs/lung1_e2_setup_and_run.md).
 
-## 2. Test on exactly 100 eligible longitudinal subjects
+## Reproduction workflow
+
+1. Obtain the LUNG1 and NSCLC-Radiogenomics data and pretrained weights separately. Follow the [cohort audit](docs/lung1_cohort_audit.md), [preprocessing report](docs/lung1_foundation_models_training_preprocessing_results.md) and [external evaluation protocol](docs/lung1_phase4_protocol.md).
+2. Prepare the cohorts and model inputs using the entry points in the [script guide](scripts/README.md). Review each script's arguments and input paths before launching it.
+3. Extract embeddings and run the locked-fold analyses. The [documentation index](docs/README.md) distinguishes primary protocols, sensitivity analyses and exploratory reports.
+4. Generate tables/figures and build the manuscript once the required local outputs are available.
+
+A clone alone cannot reproduce the experiments without the datasets, external encoder repositories and checkpoints. The locations expected by the loaders are defined in `scripts/extract_lung1_e1_embeddings.py`. Historical run reports retain their original provenance and do not establish a prospective analysis plan.
+
+## Checks and manuscript
 
 ```bash
-python scripts/build_nlst_manifest.py \
-  --max-patients 100 \
-  --seed 42 \
-  --tag test_100
+.venv/bin/python -m pytest tests -q
+make -C manuscript
 ```
 
-`--max-patients` is applied **after** keeping only subjects with at least two
-usable CT studies.
+`make -C manuscript` regenerates artifacts from local experiment outputs and compiles the paper. To compile only the checked-in tables and figures, use `make -C manuscript pdf`; this requires pdfLaTeX, BibTeX and the Vancouver bibliography style. Override the artifact-generation interpreter with `make -C manuscript PYTHON=/path/to/python`.
 
-Expected outputs:
-
-```text
-data/manifests/
-├── nlst_test_100_series.csv
-├── nlst_test_100_subjects.csv
-├── nlst_test_100_pairs.csv
-├── nlst_test_100_series_uids.txt
-└── nlst_test_100.tcia
-```
-
-If the TCIA manifest endpoint is unavailable, the CSVs and UID list are still
-created. The UID list can then be used to recreate the download manifest.
-
-To build the cohort manifest, download the selected DICOM series and fetch the
-NLST clinical tables in one command:
-
-```bash
-python scripts/build_nlst_manifest.py \
-  --max-patients 100 \
-  --seed 42 \
-  --tag test_100 \
-  --download \
-  --download-clinical
-```
-
-Clinical outputs are written under:
-
-```text
-data/metadata/nlst/clinical/
-├── raw/
-├── cohort_subsets/<tag>/
-└── clinical_tables_summary_<tag>.csv
-```
-
-For the first server-side balanced pilot cohort:
-
-```bash
-PYTHON=.venv/bin/python bash scripts/run_server_pilot_500_balanced.sh
-```
-
-This selects 500 longitudinally eligible patients balanced by `nlst_canc`
-status, downloads their DICOM series and clinical data, converts the scans to
-NIfTI and prepares Rad-JEPA-ready `.npy` volumes.
-
-## 3. Rad-JEPA-3D bootstrap
-
-The project is set up to start from the pretrained Rad-JEPA-3D encoder:
-
-```text
-external/RadJepa/
-external/Rad-Jepa-3D-hf/
-├── config.json
-└── encoder/encoder.pt
-```
-
-Prepare converted NIfTI volumes for the encoder:
-
-```bash
-python scripts/prepare_radjepa_volumes.py \
-  --nifti-manifest data/processed/nlst/nii_manifest.csv
-```
-
-This writes `(1, 32, 256, 256)` float32 arrays in `[0, 1]` to:
-
-```text
-data/processed/nlst/radjepa_npy/
-data/processed/nlst/radjepa_npy_manifest.csv
-```
-
-Extract frozen Rad-JEPA embeddings:
-
-```bash
-python scripts/extract_radjepa_embeddings.py --batch-size 1
-```
-
-Rad-JEPA-3D requires `mamba_ssm`; on macOS this may need to run on a CUDA/Linux
-machine.
-
-On the CUDA server, install the Rad-JEPA runtime with:
-
-```bash
-PYTHON=.venv/bin/python bash scripts/install_radjepa_cuda_deps.sh
-```
-
-The script intentionally installs CUDA 12.1 PyTorch wheels by default, avoiding
-CUDA 13 wheels on servers whose NVIDIA driver only supports CUDA 12.x. It then
-installs the consolidated `requirements.txt` file.
-
-Build the latent transition table after embeddings exist:
-
-```bash
-python scripts/build_latent_transition_dataset.py \
-  --pairs data/manifests/nlst_test_10_pairs.csv \
-  --clinical-prsn data/metadata/nlst/clinical/cohort_subsets/test_10/nlst_prsn.csv
-```
-
-Train the first latent dynamics baseline:
-
-```bash
-python scripts/train_latent_predictor.py \
-  --config configs/model/latent_predictor.yaml
-```
-
-The training implementation lives under `src/lung_jepa/` and uses PyTorch
-Lightning. `scripts/train_latent_predictor.py` is only a thin compatibility
-wrapper.
-
-Training now runs a patient-level train/validation/test split by default. In
-addition to `loss`, `l1` and `cosine`, it logs persistence baseline metrics
-where `z_t` is used directly as the prediction for `z_{t+1}`, plus relative
-improvement over that baseline. Each completed experiment writes
-`metadata.json`, CSV summaries and `experiment_report.xlsx` into its local
-`outputs/` run directory.
-
-Planned follow-up experiments are listed in `docs/next_steps.md`.
-
-## 4. Full eligible cohort
-
-```bash
-python scripts/build_nlst_manifest.py --tag full
-```
-
-No patient limit is applied.
-
-## 5. Pairing strategy
-
-Default:
-
-```text
-T0 -> T1
-T1 -> T2
-```
-
-Use every possible earlier/later pair with:
-
-```bash
-python scripts/build_nlst_manifest.py --pair-mode all
-```
-
-which also includes, for example:
-
-```text
-T0 -> T2
-```
-
-## 6. Initial QC heuristic
-
-For every CT study the script selects one representative volumetric series.
-
-It currently:
-- removes descriptions containing LOCALIZER, SCOUT, TOPOGRAM, etc.;
-- requires at least 50 images by default;
-- prefers large series and descriptions containing AXIAL/CHEST/LUNG;
-- de-prioritizes CORONAL/SAGITTAL/MPR reconstructions.
-
-This is intentionally only the **metadata-level first pass**. Before training,
-the selected DICOMs should undergo a second QC based on DICOM geometry,
-slice spacing/thickness, reconstruction kernel and Rad-JEPA preprocessing.
-
-Change the minimum number of images with:
-
-```bash
---min-images 80
-```
-
-## 7. Important methodological point
-
-The first version defines longitudinal eligibility as:
-
-```text
->= 2 distinct usable CT studies for the same PatientID
-```
-
-It does not require lung-cancer diagnosis. This retains both relatively stable
-trajectories and trajectories containing disease development/progression.
-
-Once NLST clinical/CDAS variables are integrated, cohort definitions can be
-expanded to cancer-specific, pre-diagnosis, post-diagnosis, treatment-conditioned
-and survival-analysis subsets.
+The compiled PDF is `manuscript/build/main.pdf`; generated LaTeX build files are ignored by Git. See the [manuscript guide](manuscript/README.md) for provenance and verification notes.

@@ -1,0 +1,57 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}% scalable Type 1 fonts: T1 Computer Modern would otherwise be embedded as Type 3 bitmaps (text not selectable in macOS Preview)
+\usepackage[utf8]{inputenc}
+\usepackage[margin=25mm]{geometry}
+\usepackage{graphicx,booktabs,longtable,array}
+\usepackage{xcolor}
+\usepackage{placeins}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit}
+\input{tables/methods_tables}
+% Allow figures and tables to share pages with text, close to where they are cited.
+\renewcommand{\topfraction}{0.85}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.12}
+\renewcommand{\floatpagefraction}{0.8}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[hidelinks]{hyperref}
+% Names of the clinical reference models (Section 3.4), used unchanged throughout.
+\ExplSyntaxOn
+\NewDocumentCommand{\model}{m}{\tl_set:Nn \l_tmpa_tl {#1}\tl_replace_all:Nnn \l_tmpa_tl {+} {+\allowbreak}\textsf{\l_tmpa_tl}}
+\ExplSyntaxOff
+\newcommand{\gap}[1]{\par\smallskip\noindent\textcolor{red!65!black}{\textbf{[MATERIAL GAP]} #1}\par\smallskip}
+\title{Prognostic transferability of CT foundation models in non-small-cell lung cancer: adaptation, tumour dependence, incremental clinical value and external evaluation}
+\author{Author list and affiliations pending}
+\date{Working draft --- 26 October 2026}
+\begin{document}
+\maketitle
+\begin{abstract}
+Foundation models pretrained on large image collections are increasingly proposed for predicting overall survival from pretreatment computed tomography (CT) in non-small-cell lung cancer (NSCLC), task in which cohorts with survival follow-up are typically small. Whether their representations transfer to this task remains unclear: they have been evaluated in different settings and against different baselines, so it is unknown whether they add to clinical, radiomic and tumour-centred models, whether adapting them to survival helps, whether their predictions rely on the tumour, and whether they transfer to other populations. To answer these questions, we compared five foundation models that encoded the whole CT, four pretrained on CT (COLIPRI, TANGERINE, Rad-JEPA-3D and CT-CLIP) and one on natural images (DINOv3), with clinical covariates, tumour volume, radiomic features and two deep networks applied to the tumour region. All models were developed under a single protocol on 416 LUNG1 patients (369 deaths), with the same nested cross-validation folds, and assessed with Uno's concordance (C) at 36 months. We also tested whether adapting foundation models to survival improved discrimination, from a linear Cox model on frozen embeddings to trainable survival heads, low-rank adaptation and partial fine-tuning of the encoder, and how it varied with the number of training patients. Finally, we masked the tumour inside each encoder and evaluated the frozen models once on 143 external patients from NSCLC-Radiogenomics. Internally, COLIPRI discriminated best (C 0.617; 95\% interval 0.582 to 0.652), about 0.03 above stage with tumour volume (0.588) and radiomics (0.591), but not significantly after Holm correction, and adding it to clinical covariates and tumour volume raised C by 0.035 ($-0.001$ to 0.070), also not significantly. No level of adaptation improved on the linear Cox model (all $p_\mathrm{Holm}\geq0.41$), the foundation models were no more robust to fewer training patients than the baselines, and masking the tumour changed discrimination by at most 0.013. Externally, TANGERINE (0.649), DINOv3 (0.643) and COLIPRI (0.627) maintained their discrimination, comparable to clinical covariates with tumour volume (0.646), but their absolute risks did not transfer: mean predicted 36-month mortality ranged from 37\% to 85\% across models, against 25\% observed. Foundation models thus captured prognostic information comparable to that of established predictors, with no significant advantage over them, did not benefit from adaptation and drew on the patient rather than on the tumour. As discrimination converged near 0.6 across all model families, survival prediction from pretreatment CT and the clinical variables of public cohorts appears limited more by the available input than by the choice of model: information such as performance status, comorbidity and the treatment delivered, which these cohorts record incompletely or not at all, may contribute more to further progress than larger or more extensively adapted image encoders.
+\end{abstract}
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/methods}
+\input{sections/results}
+\input{sections/discussion}
+\section*{Declarations}
+\gap{Authors must supply affiliations, contributions, funding, conflicts of interest, and the applicable ethics and data-use statements. Public dataset availability does not itself establish an ethics exemption.}
+\noindent\textbf{Code availability.} Analysis code, experimental protocols and aggregate result summaries are available at \url{https://github.com/nico9902/ct-fm-prognostic-transferability}. Software dependencies are documented in the repository requirements files. Imaging data and pretrained model weights must be obtained separately from their respective sources.
+\noindent\textbf{Draft AI-assistance disclosure for author review.} An AI coding assistant assisted with manuscript organization, prose drafting, reference discovery, and generation of tables and figures from existing aggregate analysis outputs. Authors must verify the text, references, analyses, and disclosure against the selected journal's policy before submission.
+\bibliographystyle{vancouver}
+\bibliography{references}
+\clearpage
+% \appendix
+% \section{Preliminary fixed-epoch analysis}\label{app:fixed}
+% Before the adaptation configuration was fixed, LoRA and partial fine-tuning of COLIPRI and TANGERINE were examined over the same learning rates for 5 or 20 epochs, giving 24 configurations. Each fit used the whole development set (approximately 332 patients) and was evaluated at the final epoch on the same test folds, so no data were held out for choosing among configurations. This appendix reports all of them without selection.
+
+% All 24 configurations completed five folds (Figure~\ref{fig:sweep}; Table~\ref{tab:phase3}). For both encoders and both methods, mean-fold Uno C increased with the learning rate and with 20 rather than 5 epochs. At the lowest learning rates, performance was close to chance (0.485--0.529). At the highest learning rate with 20 epochs, LoRA reached 0.639 for COLIPRI and 0.630 for TANGERINE, and partial fine-tuning reached 0.600 and 0.629. These settings lay at the upper edge of the grid, so higher learning rates or longer training were not examined. Performance varied between folds: for the best LoRA configuration, fold-level Uno C ranged from 0.571 to 0.719 for COLIPRI and from 0.536 to 0.695 for TANGERINE.
+
+% The frozen reference head, fitted on the same development sets and evaluated on the same test folds, reached 0.617 for COLIPRI and 0.599 for TANGERINE. In point estimate, the best LoRA configuration exceeded the frozen head by 0.022 for COLIPRI and 0.031 for TANGERINE; the best partial fine-tuning configuration exceeded it by 0.030 for TANGERINE but remained 0.017 below it for COLIPRI. Because these configurations were identified from test-fold results, this difference is not an unbiased estimate of the benefit of adaptation, and no hypothesis test is attached to it. The configuration with the highest mean Uno C for both encoders (LoRA $10^{-3}$, partial fine-tuning $10^{-4}$, 20 epochs) was then fixed for all five encoders (Section~\ref{sec:selected}); for COLIPRI and TANGERINE, the main-text adaptation results are these fits and are therefore optimistic.
+
+% \begin{figure}[!htbp]
+% \centering\includegraphics[width=\linewidth]{figures/phase3_sweep.pdf}
+% \caption{Preliminary fixed-epoch analysis of encoder adaptation for COLIPRI and TANGERINE. Each cell is mean Uno C through 36 months across the five outer folds, evaluated at the final epoch. The colour scale is descriptive; cells are not independent evaluations of an optimally selected method.}\label{fig:sweep}
+% \end{figure}
+% \input{tables/phase3}
+\end{document}

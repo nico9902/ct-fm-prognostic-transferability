@@ -1,8 +1,0 @@
-{
-  "recommendation": "IMPROVE PREDICTOR; defer the full probabilistic world model",
-  "scenario": "B-like predictor limitation",
-  "evidence": "Both heads support an oracle benefit and true-versus-predicted gap; both G3 upper confidence bounds exclude a +0.02 AUROC gain.",
-  "distinction": "The predeclared two-sided equivalence rule remains inconclusive: possible G3 deterioration beyond -0.02 is not ruled out. Lack of meaningful positive gain does not prove exact equivalence.",
-  "disease_state": "No supported current-state superiority or greater longitudinal gain over global state.",
-  "no_full_world_model": true
-}

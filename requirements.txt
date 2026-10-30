@@ -29,6 +29,7 @@ wandb>=0.18
 numpy>=1.26
 pandas>=2.0
 openpyxl>=3.1
+matplotlib>=3.8
 requests>=2.31
 idc-index==0.12.5
 nibabel>=5.4
@@ -39,7 +40,14 @@ pylibjpeg-libjpeg>=2.1
 python-gdcm>=3.0.10; platform_system == "Linux"
 scipy>=1.14
 scikit-learn>=1.4
+lifelines>=0.30,<1.0
+vector-quantize-pytorch==1.1.2
+beartype>=0.18,<1
 PyYAML>=6.0
+
+# Tumor-centred baselines: Pai et al. 2024 FM (MONAI ResNet50) and Hosny et al. 2018 Keras weights
+monai==1.4.0
+h5py>=3.10
 
 # Build/runtime utilities used by the CUDA dependency installer
 pip>=24.0

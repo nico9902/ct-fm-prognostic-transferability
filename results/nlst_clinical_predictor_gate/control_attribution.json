@@ -1,6 +1,0 @@
-{
-  "primary_candidate": "direct_C2",
-  "clinical_loss_advantage_over_matched_geometry": false,
-  "advantage_over_risk_only_classifier_control": false,
-  "interpretation": "A significant candidate-vs-old gap reduction is not automatically an advantage of clinical training loss. Read matched C1, geometry-only and risk-only comparisons. No claim of patient-specific future anatomy recovery follows from risk scores alone."
-}

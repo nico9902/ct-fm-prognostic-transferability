@@ -1,0 +1,163 @@
+% Fig. 4: design of the four tumour-dependence analyses (RQ3), one row per analysis.
+% Same fonts, palette and icons as Fig. 1 (figures/figure1/study_overview_fig.tex):
+% cyan = foundation-model encoder and its tokens, accent = survival model and outcome,
+% orange = GTV (tumour), yellow = peritumoral shell, purple = control region.
+% The two CT slices (LUNG1-001, axial through the GTV centroid) come from
+% scripts/build_figure4_slices.py.
+% Build: ../../../.venv/bin/python ../../scripts/build_figure4_slices.py; pdflatex rq3_design_fig.tex;
+%        cp rq3_design_fig.pdf ../rq3_design.pdf
+\documentclass[tikz,border=1pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+\renewcommand{\mddefault}{c}
+\renewcommand{\bfdefault}{bc}
+\usepackage{graphicx}
+\usepackage{fix-cm}
+\usepackage{amsmath}
+\usetikzlibrary{arrows.meta,calc}
+
+\definecolor{ink}{HTML}{263040}
+\definecolor{muted}{HTML}{6B7686}
+\definecolor{accent}{HTML}{34508A}
+\definecolor{clinF}{HTML}{FBF1D2}\definecolor{clinE}{HTML}{B8932E}
+\definecolor{imgF}{HTML}{DCEFF8}\definecolor{imgE}{HTML}{3F8FB8}
+\definecolor{testF}{HTML}{F8D9CF}\definecolor{testE}{HTML}{C8603F}
+\definecolor{extF}{HTML}{EBDDF0}\definecolor{extE}{HTML}{8A5A9E}
+\definecolor{devF}{HTML}{E4E9F3}
+
+\newcommand{\fs}{\fontsize{6.9}{8.1}\selectfont}
+\newcommand{\fsm}{\fontsize{6.2}{7.1}\selectfont}
+
+\tikzset{
+  >={Latex[length=3.6pt,width=3.2pt]},
+  cell/.style={rounded corners=1.5pt, line width=0.6pt},
+  plain/.style={cell, fill=white, draw=accent!70},
+  img/.style={cell, fill=imgF, draw=imgE},
+  outc/.style={cell, fill=devF, draw=accent!45},
+  same/.style={cell, fill=white, draw=muted!70, dashed},
+  pill/.style={rounded corners=1.6mm, line width=0.6pt, font=\fs, text=ink, inner xsep=4pt, inner ysep=0pt,
+              text height=5.1pt, text depth=0pt, minimum height=0.36cm},
+  cox/.style={pill, fill=accent, draw=accent, text=white, font=\fs\bfseries},
+  title/.style={font=\fontsize{7.9}{8.8}\selectfont\bfseries, text=accent, anchor=west, inner sep=0},
+  question/.style={font=\fs\itshape, text=muted, anchor=west, inner sep=0},
+  colhead/.style={font=\fontsize{7.9}{8.8}\selectfont\bfseries, text=accent, anchor=south},
+  badge/.style={circle, fill=accent, text=white, inner sep=0, minimum size=0.36cm,
+                font=\fontsize{8}{8}\selectfont\bfseries},
+  flow/.style={->, line width=0.65pt, draw=ink},
+  txt/.style={font=\fs, text=ink, align=center, inner sep=0},
+  note/.style={font=\fsm, text=muted, align=center, inner sep=0},
+}
+
+% Columns: left edge and width (cm)
+\def\Xa{0}\def\Wa{2.9}
+\def\Xb{3.32}\def\Wb{3.3}
+\def\Xc{7.04}\def\Wc{4.0}
+\def\Xd{11.46}\def\Wd{3.3}
+\def\Xe{15.18}\def\We{3.3}
+
+% \cell{style}{x}{width}{top}{height}{content}: box with its content centred,
+% at least 0.25 cm from each side
+\newcommand{\cell}[6]{%
+  \draw[#1] (#2,#4) rectangle ++({#3},-#5);
+  \pgfmathsetlengthmacro\tw{(#3-0.5)*1cm}
+  \node[txt, text width=\tw] at ({#2+(#3)/2},{#4-(#5)/2}) {#6};}
+% Arrows from column to column at height #1; #2 = list of source/target edges
+\newcommand{\flows}[2]{\foreach \s/\t in {#2} \draw[flow] (\s+0.05,#1) -- (\t-0.05,#1);}
+% Row title: badge, analysis name, question
+\newcommand{\rowtitle}[4]{%
+  \node[badge] at (0.18,#1) {#2};
+  \node[title] (rt) at (0.48,#1) {#3};
+  \node[question] at ([xshift=0.18cm]rt.east) {#4};}
+\newcommand{\gap}{\\[1.3mm]}
+
+% Inline icons (used inside cell text) --------------------------------
+\newcommand{\snowflake}[2][1]{% frozen weights
+  \begin{scope}[shift={#2}, scale=#1]
+    \foreach \a in {90,150,...,450} {
+      \draw[line width=0.5pt, draw=imgE, line cap=round] (0,0) -- (\a:0.13);
+      \draw[line width=0.4pt, draw=imgE, line cap=round] (\a:0.08) -- ++(\a+40:0.04) (\a:0.08) -- ++(\a-40:0.04);}
+  \end{scope}}
+\newcommand{\encicon}{\tikz{% frozen encoder, as in Fig. 1b
+  \draw[line width=0.6pt, draw=imgE, fill=white, rounded corners=1pt] (-0.48,-0.38) -- (0.48,-0.2) -- (0.48,0.2) -- (-0.48,0.38) -- cycle;
+  \snowflake{(0,0)}}}
+% \grid{token size}{cells}: 6 x 4 tokens of one axial level; cells = list of col/row/style
+\tikzset{tok/.style={fill=imgF, draw=imgE!55, line width=0.3pt},
+         tum/.style={fill=testE!75, draw=testE, line width=0.3pt},
+         shell/.style={fill=clinF, draw=clinE, line width=0.3pt},
+         gtvhid/.style={fill=white, draw=testE, line width=0.6pt, dash pattern=on 0.9pt off 0.5pt},
+         ctlhid/.style={fill=white, draw=extE, line width=0.6pt, dash pattern=on 0.9pt off 0.5pt}}
+\newcommand{\grid}[2]{\tikz{%
+  \foreach \x in {0,...,5} \foreach \y in {0,...,3} \draw[tok] (\x*#1,\y*#1) rectangle ++(#1,#1);
+  \edef\gridlist{#2}\foreach \x/\y/\st in \gridlist \draw[\st] (\x*#1,\y*#1) rectangle ++(#1,#1);}}
+\newcommand{\vecicon}{\tikz{% global vector
+  \foreach \h [count=\k from 0] in {0.32,0.18,0.42,0.12,0.26,0.36} \fill[imgE!70] (\k*0.1,0) rectangle ++(0.07,\h);}}
+\newcommand{\ctpic}[1]{\tikz{\node[inner sep=0] (im) {\includegraphics[width=1.36cm]{#1}};
+  \draw[black, rounded corners=1pt, line width=0.4pt] (im.south west) rectangle (im.north east);}}
+\newcommand{\coxpill}[1]{\tikz\node[cox]{#1};}
+\newcommand{\outpill}[1]{\tikz\node[pill, fill=white, draw=accent, font=\fs\bfseries, text=accent]{#1};}
+% The tumour lies on the right of the displayed slice (patient's left); the control is its mirror image.
+\def\TUM{3/1/tum, 3/2/tum, 4/2/tum}
+\def\SHELL{2/0/shell, 3/0/shell, 4/0/shell, 2/1/shell, 4/1/shell, 5/1/shell, 2/2/shell, 5/2/shell, 2/3/shell, 3/3/shell, 4/3/shell, 5/3/shell}
+
+\begin{document}
+\begin{tikzpicture}[x=1cm, y=1cm]
+\useasboundingbox (-0.02,0.5) rectangle (18.5,-12.3);
+
+% ---------- column headings ----------
+\foreach \x/\w/\lab in {\Xa/\Wa/Input, \Xb/\Wb/Encoder (frozen), \Xc/\Wc/Representation, \Xd/\Wd/Survival model or probe, \Xe/\We/Outcome measure} {
+  \node[colhead] at (\x+\w/2,0.03) {\strut\lab};
+  \draw[accent!35, line width=0.6pt] (\x,-0.06) -- (\x+\w,-0.06);}
+
+% ===================================================== (a) regional pooling
+\rowtitle{-0.5}{a}{Regional pooling}{Where in the scan do the prognostically useful tokens lie?}
+\def\T{-0.8}\def\H{2.5}
+\cell{plain}{\Xa}{\Wa}{\T}{\H}{\ctpic{axial_gtv.png}\gap Whole CT; the GTV\\defines the regions}
+\cell{img}{\Xb}{\Wb}{\T}{\H}{\encicon\gap\textbf{No masking}\\run once; final tokens cached\\on at most 8 cells per axis}
+\cell{img}{\Xc}{\Wc}{\T}{\H}{\grid{0.2}{\SHELL, \TUM}\gap\textbf{Token mean in 5 regions}\\all\,\textperiodcentered\,tumour\,\textperiodcentered\,non-tumour\\0--20\,mm shell\,\textperiodcentered\,tumour + shell}
+\cell{plain}{\Xd}{\Wd}{\T}{\H}{\coxpill{PCA16 + L2 Cox}\gap\textbf{refitted} for each region}
+\cell{outc}{\Xe}{\We}{\T}{\H}{\outpill{Uno C\textsubscript{36}}\gap each region\\vs all tokens}
+\flows{\T-\H/2}{\Xa+\Wa/\Xb, \Xb+\Wb/\Xc, \Xc+\Wc/\Xd, \Xd+\Wd/\Xe}
+
+% ===================================================== (b) native-token masking
+\rowtitle{-3.62}{b}{Native-token masking}{Is information flowing from the tumour needed for discrimination?}
+\def\T{-3.92}\def\H{3.05}
+\cell{plain}{\Xa}{\Wa}{\T}{\H}{\ctpic{axial_gtv_control.png}\gap Whole CT, \textbf{unchanged}\\GTV and control\\token footprints}
+\cell{img}{\Xb}{\Wb}{\T}{\H}{\encicon\gap\textbf{Tokens hidden in every layer}\\original\,\textperiodcentered\,GTV hidden\\control hidden\gap{\fsm\color{muted}Rad-JEPA-3D: tokens removed\\from the sequence}}
+\cell{img}{\Xc}{\Wc}{\T}{\H}{%
+  \begin{tabular}{@{}c@{\hspace{2.2mm}}c@{\hspace{2.2mm}}c@{}}
+  \grid{0.15}{\TUM} & \grid{0.15}{3/1/gtvhid, 3/2/gtvhid, 4/2/gtvhid} & \grid{0.15}{\TUM, 2/1/ctlhid, 2/2/ctlhid, 1/2/ctlhid}\\[-0.3mm]
+  {\fsm\color{muted}original} & {\fsm\color{muted}GTV hidden} & {\fsm\color{muted}control hidden}
+  \end{tabular}\gap
+  \textbf{Retained-token mean} (primary)\\positions visible in all conditions\\[0.8mm]\textbf{Global vector} (secondary)}
+\cell{plain}{\Xd}{\Wd}{\T}{\H}{\coxpill{PCA16 + L2 Cox}\gap\textbf{refitted} for each condition}
+\cell{outc}{\Xe}{\We}{\T}{\H}{\outpill{Paired $\boldsymbol{\mathsf{\Delta}}$C}\gap original vs GTV hidden\\control vs GTV hidden\gap change of the\\global vector}
+\flows{\T-\H/2}{\Xa+\Wa/\Xb, \Xb+\Wb/\Xc, \Xc+\Wc/\Xd, \Xd+\Wd/\Xe}
+
+% ===================================================== (c) fixed-head masking
+\rowtitle{-7.29}{c}{Fixed-head masking}{Does the fitted survival model rely on tumour-derived information?}
+\def\T{-7.59}\def\H{1.45}
+\cell{same}{\Xa}{\Xc+\Wc}{\T}{\H}{\color{muted}Same CT, masking and embeddings as in \textbf{(b)}}
+\cell{plain}{\Xd}{\Wd}{\T}{\H}{\coxpill{PCA16 + L2 Cox}\gap fitted on \textbf{original} embeddings,\\applied \textbf{unchanged}}
+\cell{outc}{\Xe}{\We}{\T}{\H}{\outpill{Paired $\boldsymbol{\mathsf{\Delta}}$C}\gap as in (b); rank correlation\\of the risk scores}
+\flows{\T-\H/2}{\Xc+\Wc/\Xd, \Xd+\Wd/\Xe}
+
+% ===================================================== (d) clinical-variable probing
+\rowtitle{-9.36}{d}{Clinical-variable probing}{What do the embeddings encode, and does hiding the tumour remove it?}
+\def\T{-9.66}\def\H{2.05}
+\cell{same}{\Xa}{\Xb+\Wb}{\T}{\H}{\color{muted}As in \textbf{(b)}: original and GTV hidden}
+\cell{img}{\Xc}{\Wc}{\T}{\H}{\vecicon\gap\textbf{Global vector}\\original\,\textperiodcentered\,GTV hidden}
+\cell{plain}{\Xd}{\Wd}{\T}{\H}{\coxpill{PCA16 + linear probe}\gap ridge or L2 logistic\gap 9 targets: age, GTV volume,\\sex, T, N, stage, histology}
+\cell{outc}{\Xe}{\We}{\T}{\H}{\outpill{Decodability}\gap Spearman $\rho$ or AUC,\\out-of-fold\gap original vs GTV hidden}
+\flows{\T-\H/2}{\Xb+\Wb/\Xc, \Xc+\Wc/\Xd, \Xd+\Wd/\Xe}
+
+% ---------- legend ----------
+\begin{scope}[shift={(0,-12.08)}]
+\foreach \st/\lab/\xx in {tok/{encoder tokens}/0, tum/{GTV tokens}/2.25, shell/{peritumoral shell}/4.35, gtvhid/{GTV tokens hidden}/6.95, ctlhid/{control tokens hidden}/9.7}
+  {\draw[\st] (\xx,-0.09) rectangle ++(0.18,0.18); \node[txt, anchor=west] at (\xx+0.26,0) {\lab};}
+\draw[testE, line width=0.8pt] (12.75,0) circle (0.09); \node[txt, anchor=west] at (12.92,0) {GTV};
+\draw[extE, line width=0.8pt] (13.85,0) circle (0.09); \node[txt, anchor=west] at (14.02,0) {control};
+\draw[same] (15.3,-0.1) rectangle ++(0.36,0.2); \node[txt, anchor=west] at (15.74,0) {shared with (b)};
+\end{scope}
+\end{tikzpicture}
+\end{document}

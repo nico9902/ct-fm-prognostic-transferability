@@ -1,4 +1,5 @@
 .venv/
+.venv-dinov3/
 __pycache__/
 *.pyc
 .DS_Store
@@ -21,5 +22,20 @@ external/
 .vscode/
 
 # Local research notes and generated visualizations
-Proposta di ricerca – Latent World Model per la progressione del NSCLC.md
 radjepa_sliding_sample_window_slices.png
+
+# Experiment trackers, caches, and local agent configuration
+wandb/
+lightning_logs/
+.pytest_cache/
+.coverage
+htmlcov/
+.agents/
+.codex/
+.aws/
+
+# Large model artifacts and local checkpoints
+*.ckpt
+*.pth
+*.pt
+*.safetensors

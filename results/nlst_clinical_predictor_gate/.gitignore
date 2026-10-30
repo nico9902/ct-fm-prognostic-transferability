@@ -1,5 +1,0 @@
-checkpoints/
-runs/
-predictions/
-wandb/
-*.log

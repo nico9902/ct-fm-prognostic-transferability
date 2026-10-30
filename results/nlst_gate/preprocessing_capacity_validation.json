@@ -1,8 +1,0 @@
-{
-  "status": "PASS",
-  "checks": [
-    "G0/G1/G2 scalers match training pairs only",
-    "within-space head parameter counts matched",
-    "G3 matches global core head capacity"
-  ]
-}

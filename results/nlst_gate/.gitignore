@@ -1,5 +1,0 @@
-# Reproducible binary checkpoints, training logs, and cached state tensors stay local.
-runs/
-wandb/
-*.log
-representation_analysis/disease_states_seed*.npy

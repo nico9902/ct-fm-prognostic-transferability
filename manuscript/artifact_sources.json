@@ -1,0 +1,108 @@
+{
+  "metric": "Uno C at 36 months",
+  "sources": [
+    {
+      "path": "outputs/lung1_phase3/lr1e-5_ep5/lora/colipri/summary.json",
+      "sha256": "33055113580516fd40b7b86de7141dce6f76ec73ace94d4af973ca21384f727b"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-5_ep5/lora/tangerine/summary.json",
+      "sha256": "eb28148de6fdf2385e96fd49291584579b5898979b6aa604c9b5fab50724d4f4"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-5_ep20/lora/colipri/summary.json",
+      "sha256": "e819055a38b752f80f9001a45a6a3f4a687cdaa87f43b148d119b589fde10903"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-5_ep20/lora/tangerine/summary.json",
+      "sha256": "5b010b5c1969f5493eadd6ff06bba52e72490ab53aa002c84af8ea2862dd82e7"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-4_ep5/lora/colipri/summary.json",
+      "sha256": "932b3c277b2bd2bbc50620eda0d7317d8f2b6a6008e5879cb4a224c823472f84"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-4_ep5/lora/tangerine/summary.json",
+      "sha256": "700ba98e1c97cdd2edc5f44554107de17e8189744b0737b6eaf6aec1985edf20"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-4_ep20/lora/colipri/summary.json",
+      "sha256": "732d3b7c7eec67d74728683376e5db138968979b74646e9724c34c11aa335273"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-4_ep20/lora/tangerine/summary.json",
+      "sha256": "9e2a6f18deca1e660f77b0b3c8365b4101853d95a99b5d271528fea329b06254"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-3_ep5/lora/colipri/summary.json",
+      "sha256": "89764c25b356bb2ac7e3fa44b733b585e356bb1d5201b5dc015a551b740c171a"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-3_ep5/lora/tangerine/summary.json",
+      "sha256": "e7a2abe8dc005e83ac6febdb214ec995f85d4d3e4a6ae03078fc4094ff13e460"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-3_ep20/lora/colipri/summary.json",
+      "sha256": "afbb2e03cd0cdba1bbe4750f6a248e5a793d91444b6cd5b39f5327e93d7bed96"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-3_ep20/lora/tangerine/summary.json",
+      "sha256": "8111c4b4e871f7fc108e62be891102341e498c6e728821a21696c16c17fa3d7a"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-6_ep5/partial/colipri/summary.json",
+      "sha256": "91b51ccd39680495ae0b55ff2170db691dd195cab476550d5a3a27e7260d9489"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-6_ep5/partial/tangerine/summary.json",
+      "sha256": "9e5138406aedc3b19dba82fdba96a0a63cb82948e66d81b6f515fc23b6f72c31"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-6_ep20/partial/colipri/summary.json",
+      "sha256": "3407d1b569b75e1cc7d4e3329e2c1294840cb1b39173cc90c96ba798a18e1568"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-6_ep20/partial/tangerine/summary.json",
+      "sha256": "f56ca37da5ffe0d619179c9d33e60e0b2028bb5b19cf988087cf949505a13d9d"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-5_ep5/partial/colipri/summary.json",
+      "sha256": "528a45cc04e6a2c29d961c5e379e000c768a062ca62b2f6ddcdb8f2bcff963fa"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-5_ep5/partial/tangerine/summary.json",
+      "sha256": "110d71aebd519a0d2c7f5da4f4c1c8857d81e903cd52d3cedcad87ab31efcd8c"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-5_ep20/partial/colipri/summary.json",
+      "sha256": "9b16949644a0473f734b4204dc6a405cd917d3a4c7e02b841b8e6588e85bdf5a"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-5_ep20/partial/tangerine/summary.json",
+      "sha256": "2d4bc01069282ba78ad45b6965f61e88952c15b148d20d2c2d50bf46c6d53abc"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-4_ep5/partial/colipri/summary.json",
+      "sha256": "2bd7c897f6f07129340947825a16b91f0cc0fce748dcd352ea9ca6b3b95bb707"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-4_ep5/partial/tangerine/summary.json",
+      "sha256": "18b8986f05c40fac755a5fdd215b90473823d08941b500715caf182ebc4bb751"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-4_ep20/partial/colipri/summary.json",
+      "sha256": "0f6825250d8d3c0a0e7c7e79b7cc7935680cacbe1751e3c11b4d8160dcae9c11"
+    },
+    {
+      "path": "outputs/lung1_phase3/lr1e-4_ep20/partial/tangerine/summary.json",
+      "sha256": "82280909933a0609888eaa0e2417e5a47152daa4816dcf80e099d2577fde6c7e"
+    },
+    {
+      "path": "outputs/phase4_external/external_validation.json",
+      "sha256": "10dfdba3a262e5a9ade579c4186088a795efdaa4f49cdce751729d6dfce9dba7"
+    }
+  ],
+  "phase3_configurations": 24,
+  "phase3_completed_folds": 120,
+  "new_statistical_tests": false
+}

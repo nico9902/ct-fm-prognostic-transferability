@@ -1,0 +1,92 @@
+% Methods tables. Each table is defined as a macro and placed from sections/methods.tex.
+\newcommand{\tabDesign}{%
+\begin{table}[!htbp]
+\centering\footnotesize
+\caption{Research questions, analyses and comparisons. Every internal analysis used the same 416 patients and the same five outer folds.}
+\label{tab:design}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{1.0cm}>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}p{9.0cm}@{}}
+\toprule
+RQ & Analysis & Main comparison \\
+\midrule
+RQ1 & Frozen benchmark & Each representation under one frozen head vs \model{Stage+Volume}, radiomics and tumour-centred comparators \\
+ & Clinical increment analysis & Nested clinical models with and without an image block (Table~\ref{tab:clinical}) \\
+\addlinespace
+RQ2 & Trainable-head comparison & Multilayer perceptron and survival query adapter vs frozen head of the same encoder \\
+ & Encoder adaptation & LoRA and partial fine-tuning vs frozen head of the same encoder \\
+ & Label-budget analysis & Frozen heads and baselines refitted on 10--100\% of the training patients \\
+\addlinespace
+RQ3 & Regional pooling analysis & Tokens pooled over tumour, peritumoral shell, non-tumour and whole volume \\
+ & Native-token masking analysis & Original vs tumour tokens hidden inside the encoder vs matched control \\
+ & Fixed-head masking analysis & Head fitted on original embeddings applied unchanged to masked ones \\
+ & Clinical-variable probing & Decodability of clinical variables from embeddings, original vs masked \\
+\addlinespace
+RQ4 & External evaluation & Models fitted on all LUNG1 patients, frozen, applied once to NSCLC-Radiogenomics \\
+ & External LoRA analysis & LoRA vs frozen head of the same encoder on the external cohort \\
+\bottomrule
+\end{tabular}
+\end{table}}
+
+\newcommand{\tabRepresentations}{%
+\begin{table}[!htbp]
+\centering\footnotesize
+\caption{Image representations. Each encoder kept its published preprocessing and its own global pooling, so differences between pipelines combine pretraining, preprocessing and pooling. Input sizes are depth $\times$ height $\times$ width. The tumour-centred comparators use the primary-tumour segmentation; the whole-volume encoders and DINOv3 do not. HU, Hounsfield units.}
+\label{tab:representations}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.3cm}>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}p{4.6cm}>{\raggedright\arraybackslash}p{3.4cm}r@{}}
+\toprule
+Representation & Pretraining & Input & Global vector & Dim. \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Whole-volume CT encoders}}\\
+COLIPRI\cite{wald2025colipri} & Report--image alignment and reconstruction & 2-mm isotropic, central crop or pad to $192^3$; HU $[-1000,1000]$ & Learned attention pool, projected & 768 \\
+TANGERINE\cite{mcconnell2026tangerine} & Masked autoencoding & Whole field of view resampled to $256^3$; HU $[-1200,800]$ & Class token concatenated with mean patch token & 2,048 \\
+Rad-JEPA-3D\cite{trinh2026radjepa} & Joint-embedding prediction & Whole array resized to $32\times256\times256$; HU $[-1000,400]$ & Mean of final tokens & 384 \\
+CT-CLIP\cite{hamamci2026ctclip} & Report--image contrastive & $1.5\times0.75\times0.75$ mm, crop or pad to $240\times480\times480$; HU $[-1000,1000]$ & Temporal mean, visual projection & 512 \\
+\multicolumn{5}{@{}l}{\textit{Natural-image encoder}}\\
+DINOv3 ViT-B/16\cite{simeoni2025dinov3} & Self-distillation on natural images & Axial slices at 3-mm spacing, each resized to $224\times224$; HU $[-1000,400]$ & Class token averaged over slices & 768 \\
+\multicolumn{5}{@{}l}{\textit{Tumour-centred comparators}}\\
+GTV radiomics & None (handcrafted) & Primary-tumour region, 1-mm isotropic; 25-HU bins & 107 PyRadiomics original-image features & 107 \\
+Pai lesion encoder\cite{pai2024} & Contrastive, on lesion patches & $50^3$ patch at 1 mm centred on the tumour centroid & Final-layer features & 4,096 \\
+Hosny network\cite{hosny2018} & Supervised, 2-year survival & $50^3$ patch at 1 mm centred on the tumour centroid & Penultimate layer; published risk score & 256 \\
+\bottomrule
+\end{tabular}
+\end{table}}
+
+\newcommand{\tabClinical}{%
+\begin{table}[!htbp]
+\centering\footnotesize
+\caption{Clinical reference models. The first five models are nested: each adds one block to the previous one, so that each block is assessed against the information already present. Within a model, the clinical covariates and the radiomic or image features received separate L2 penalties. The image features are the first 16 principal components (PCA16) of one encoder's global vector; models are named after the encoder, for example \model{Clinical+Volume+COLIPRI}.}
+\label{tab:clinical}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{5.4cm}>{\raggedright\arraybackslash}p{8.9cm}@{}}
+\toprule
+Model & Covariates \\
+\midrule
+\model{Clinical} & Age, sex, T category, N category, overall stage, histology \\
+\model{Clinical+Volume} & \model{Clinical} + log(1 + GTV volume) \\
+\model{Clinical+Volume+Radiomics} & \model{Clinical+Volume} + GTV radiomics (PCA16; all 107 features as sensitivity) \\
+\model{Clinical+Volume+Image} & \model{Clinical+Volume} + one image representation \\
+\model{Clinical+Volume+Radiomics+Image} & \model{Clinical+Volume} + GTV radiomics + COLIPRI (prespecified); TANGERINE as sensitivity \\
+\addlinespace
+\model{Stage+Volume} & Overall stage + log(1 + GTV volume); parsimonious comparator outside the nested sequence \\
+\bottomrule
+\end{tabular}
+\end{table}}
+
+\newcommand{\tabTrainable}{%
+\begin{table}[!htbp]
+\centering\footnotesize
+\caption{Trainable survival models. For the frozen linear Cox model and the two trainable heads, the candidates listed were compared by three-fold inner cross-validation within each development set, and the selected model was retrained on the whole development set (approximately 332 patients). LoRA and partial fine-tuning used one fixed configuration for all encoders (Section~\ref{sec:selected}). All models used the Cox partial likelihood with Efron ties and AdamW with weight decay $10^{-4}$, and every fit started from the pretrained encoder weights. lr, learning rate.}
+\label{tab:trainable}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{4.6cm}>{\raggedright\arraybackslash}p{6.6cm}@{}}
+\toprule
+Model & Trained parameters & Fixed settings; candidates selected by inner cross-validation \\
+\midrule
+Frozen linear Cox & Cox coefficients & PCA16 (PCA32 as sensitivity); L2 penalty 0.01, 0.1, 1 \\
+Multilayer perceptron & Head on global embedding & 1 hidden layer (width 32), dropout 0.1, lr $3\times10^{-4}$; epochs 1--100 \\
+Survival query adapter & Head on frozen spatial tokens & 4 learned queries, 128-d adapter, dropout 0.1, lr $3\times10^{-4}$; epochs 1--40 \\
+LoRA\cite{hu2021} & Low-rank updates to all linear layers of the final encoder block & Rank 8, scaling 16, lr $10^{-3}$, 20 epochs (fixed) \\
+Partial fine-tuning & All weights of the final encoder block & lr $10^{-4}$, 20 epochs (fixed) \\
+\midrule
+Encoders & & All five \\
+Training patients & & $\approx$221 per inner fit (heads); $\approx$332 for every final model \\
+\bottomrule
+\end{tabular}
+\end{table}}
