@@ -1,8 +1,0 @@
-# Install these into a separate virtual environment for the E3 GTV radiomics extraction.
-# Then install PyRadiomics 3.0.1 with --no-build-isolation (it needs installed NumPy headers).
-numpy==1.26.4
-pandas==2.3.3
-SimpleITK==2.4.1
-PyWavelets==1.8.0
-pykwalify==1.8.0
-wheel

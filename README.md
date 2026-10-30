@@ -46,11 +46,12 @@ Run commands from the repository root. The full encoder stack targets Linux with
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install -r requirements.txt
-python -m pip install -r requirements-dev.txt
+PYTHON=python bash scripts/install_radjepa_cuda_deps.sh
 ```
 
-For the CUDA 12.1 installation workflow, see [`scripts/install_radjepa_cuda_deps.sh`](scripts/install_radjepa_cuda_deps.sh). Additional environments/dependencies are described in [`requirements-colipri.txt`](requirements-colipri.txt) and [`requirements-radiomics.txt`](requirements-radiomics.txt). COLIPRI and TANGERINE require different `timm` versions; follow the isolated dependency instructions in the COLIPRI requirements.
+All project dependencies, including radiomics and tests, are listed in [`requirements.txt`](requirements.txt). Use Python 3.10 and run the installer from the repository root with a CUDA toolkit available. The installer prepares PyTorch and NumPy before building the CUDA and PyRadiomics extensions, then installs the unified requirements with build isolation disabled.
+
+TANGERINE uses `timm==0.9.16`; COLIPRI needs `timm==1.0.22`. The installer places the latter in `external/colipri/deps`, which the COLIPRI loader adds to its import path. Run the two encoders in separate processes to avoid mixing imported `timm` modules. A plain `pip install -r requirements.txt` does not perform these build and isolation steps.
 
 ## Reproduction workflow
 

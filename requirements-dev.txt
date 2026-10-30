@@ -1,2 +1,0 @@
-# Install after the project runtime requirements.
-pytest>=8,<9

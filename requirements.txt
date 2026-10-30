@@ -1,8 +1,11 @@
-# Consolidated project requirements.
+# Unified project requirements: encoders, radiomics and tests.
 #
 # This contains the project, training, and Python dependencies installed by
 # scripts/install_radjepa_cuda_deps.sh.
-# For the Rad-JEPA CUDA stack, use a Linux/CUDA-compatible Python environment.
+# Use Python 3.10 on Linux with a compatible CUDA toolkit.
+# Install with scripts/install_radjepa_cuda_deps.sh: build dependencies must
+# precede the CUDA/PyRadiomics extensions. COLIPRI uses an isolated timm override
+# installed by that script; pip cannot express two timm versions in one environment.
 
 # PyTorch CUDA 12.1 stack used by scripts/install_radjepa_cuda_deps.sh
 --extra-index-url https://download.pytorch.org/whl/cu121
@@ -26,8 +29,8 @@ lightning>=2.4
 wandb>=0.18
 
 # Data processing and medical-imaging formats
-numpy>=1.26
-pandas>=2.0
+numpy==1.26.4
+pandas==2.3.3
 openpyxl>=3.1
 matplotlib>=3.8
 requests>=2.31
@@ -36,7 +39,7 @@ nibabel>=5.4
 pydicom>=3.0
 pillow>=10.0
 pylibjpeg>=2.0
-pylibjpeg-libjpeg>=2.1
+pylibjpeg-libjpeg==2.1.0  # Compatible with NumPy 1.x (MONAI/PyRadiomics).
 python-gdcm>=3.0.10; platform_system == "Linux"
 scipy>=1.14
 scikit-learn>=1.4
@@ -55,3 +58,16 @@ setuptools>=70
 wheel>=0.44
 ninja>=1.11
 packaging>=24.0
+
+# COLIPRI inference (timm 1.0.22 is installed separately into external/colipri/deps)
+colipri==0.1.3
+torchio==1.2.1
+dynamic-network-architectures==0.4.4
+
+# GTV radiomics; NumPy must be installed before building PyRadiomics.
+PyRadiomics==3.0.1
+PyWavelets==1.8.0
+pykwalify==1.8.0
+
+# Test runner
+pytest>=8,<9

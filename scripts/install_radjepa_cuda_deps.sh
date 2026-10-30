@@ -19,6 +19,14 @@ REQUIREMENTS_FILE="${REQUIREMENTS_FILE:-requirements.txt}"
 
 "${PYTHON}" -m pip install --upgrade pip setuptools wheel ninja packaging
 
+# PyRadiomics needs NumPy headers during metadata generation/build.
+NUMPY_REQUIREMENT=$(sed -n '/^numpy==/p' "${REQUIREMENTS_FILE}")
+if [[ -z "${NUMPY_REQUIREMENT}" ]]; then
+  echo "Missing NumPy pin in ${REQUIREMENTS_FILE}" >&2
+  exit 1
+fi
+"${PYTHON}" -m pip install "${NUMPY_REQUIREMENT}"
+
 "${PYTHON}" -m pip uninstall -y torch torchvision torchaudio mamba-ssm causal-conv1d transformers || true
 
 "${PYTHON}" -m pip install \
@@ -36,12 +44,15 @@ REQUIREMENTS_FILE="${REQUIREMENTS_FILE:-requirements.txt}"
   --no-build-isolation
 
 if [[ -f "${REQUIREMENTS_FILE}" ]]; then
-  "${PYTHON}" -m pip install -r "${REQUIREMENTS_FILE}"
+  "${PYTHON}" -m pip install --no-build-isolation -r "${REQUIREMENTS_FILE}"
   # Re-apply the compatible Transformers pin in case the requirements file
   # is changed to request a newer 5.x release incompatible with mamba-ssm 2.2.4.
   "${PYTHON}" -m pip install --upgrade --force-reinstall \
     "transformers==${TRANSFORMERS_VERSION}"
 fi
+
+# The COLIPRI loader prepends this directory; TANGERINE retains timm 0.9.16.
+"${PYTHON}" -m pip install --upgrade --no-deps --target external/colipri/deps "timm==1.0.22"
 
 "${PYTHON}" - <<'PY'
 import torch
